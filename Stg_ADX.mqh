@@ -15,35 +15,28 @@
 
 // User input params.
 INPUT string __ADX_Parameters__ = "-- ADX strategy params --";  // >>> ADX <<<
-INPUT int ADX_Active_Tf = 0;  // Activate timeframes (1-255, e.g. M1=1,M5=2,M15=4,M30=8,H1=16,H2=32,H4=64...)
-INPUT int ADX_Period = 14;    // Averaging period
-INPUT ENUM_APPLIED_PRICE ADX_Applied_Price = PRICE_HIGH;  // Applied price.
-INPUT ENUM_TRAIL_TYPE ADX_TrailingStopMethod = 3;         // Trail stop method
-INPUT ENUM_TRAIL_TYPE ADX_TrailingProfitMethod = 22;      // Trail profit method
-INPUT int ADX_Shift = 0;                                  // Shift (relative to the current bar, 0 - default)
-INPUT double ADX_SignalOpenLevel = 0.0004;                // Signal open level (>0.0001)
-INPUT int ADX_SignalBaseMethod = 0;                       // Signal base method (0-1)
-INPUT int ADX_SignalOpenMethod1 = 0;                      // Open condition 1 (0-1023)
-INPUT int ADX_SignalOpenMethod2 = 0;                      // Open condition 2 (0-)
-INPUT double ADX_SignalCloseLevel = 0.0004;               // Signal close level (>0.0001)
-INPUT ENUM_MARKET_EVENT ADX_SignalCloseMethod1 = 0;       // Signal close method 1
-INPUT ENUM_MARKET_EVENT ADX_SignalCloseMethod2 = 0;       // Signal close method 2
-INPUT double ADX_MaxSpread = 6.0;                         // Max spread to trade (pips)
+INPUT int ADX_Period = 14;                                      // Averaging period
+INPUT ENUM_APPLIED_PRICE ADX_Applied_Price = PRICE_HIGH;        // Applied price.
+INPUT int ADX_Shift = 0;                                        // Shift (relative to the current bar, 0 - default)
+INPUT int ADX_SignalOpenMethod = 0;                             // Signal open method (0-1)
+INPUT double ADX_SignalOpenLevel = 0.0004;                      // Signal open level (>0.0001)
+INPUT int ADX_SignalCloseMethod = 0;                            // Signal close method
+INPUT double ADX_SignalCloseLevel = 0.0004;                     // Signal close level (>0.0001)
+INPUT int ADX_PriceLimitMethod = 0;                             // Price limit method
+INPUT double ADX_PriceLimitLevel = 0;                           // Price limit level
+INPUT double ADX_MaxSpread = 6.0;                               // Max spread to trade (pips)
 
 // Struct to define strategy parameters to override.
 struct Stg_ADX_Params : Stg_Params {
   unsigned int ADX_Period;
   ENUM_APPLIED_PRICE ADX_Applied_Price;
   int ADX_Shift;
-  ENUM_TRAIL_TYPE ADX_TrailingStopMethod;
-  ENUM_TRAIL_TYPE ADX_TrailingProfitMethod;
+  int ADX_SignalOpenMethod;
   double ADX_SignalOpenLevel;
-  long ADX_SignalBaseMethod;
-  long ADX_SignalOpenMethod1;
-  long ADX_SignalOpenMethod2;
+  int ADX_SignalCloseMethod;
   double ADX_SignalCloseLevel;
-  ENUM_MARKET_EVENT ADX_SignalCloseMethod1;
-  ENUM_MARKET_EVENT ADX_SignalCloseMethod2;
+  int ADX_PriceLimitMethod;
+  double ADX_PriceLimitLevel;
   double ADX_MaxSpread;
 
   // Constructor: Set default param values.
@@ -51,15 +44,12 @@ struct Stg_ADX_Params : Stg_Params {
       : ADX_Period(::ADX_Period),
         ADX_Applied_Price(::ADX_Applied_Price),
         ADX_Shift(::ADX_Shift),
-        ADX_TrailingStopMethod(::ADX_TrailingStopMethod),
-        ADX_TrailingProfitMethod(::ADX_TrailingProfitMethod),
+        ADX_SignalOpenMethod(::ADX_SignalOpenMethod),
         ADX_SignalOpenLevel(::ADX_SignalOpenLevel),
-        ADX_SignalBaseMethod(::ADX_SignalBaseMethod),
-        ADX_SignalOpenMethod1(::ADX_SignalOpenMethod1),
-        ADX_SignalOpenMethod2(::ADX_SignalOpenMethod2),
+        ADX_SignalCloseMethod(::ADX_SignalCloseMethod),
         ADX_SignalCloseLevel(::ADX_SignalCloseLevel),
-        ADX_SignalCloseMethod1(::ADX_SignalCloseMethod1),
-        ADX_SignalCloseMethod2(::ADX_SignalCloseMethod2),
+        ADX_PriceLimitMethod(::ADX_PriceLimitMethod),
+        ADX_PriceLimitLevel(::ADX_PriceLimitLevel),
         ADX_MaxSpread(::ADX_MaxSpread) {}
 };
 
@@ -111,10 +101,8 @@ class Stg_ADX : public Strategy {
     StgParams sparams(new Trade(_tf, _Symbol), new Indi_ADX(adx_params, adx_iparams, cparams), NULL, NULL);
     sparams.logger.SetLevel(_log_level);
     sparams.SetMagicNo(_magic_no);
-    sparams.SetSignals(_params.ADX_SignalBaseMethod, _params.ADX_SignalOpenMethod1, _params.ADX_SignalOpenMethod2,
-                       _params.ADX_SignalCloseMethod1, _params.ADX_SignalCloseMethod2, _params.ADX_SignalOpenLevel,
+    sparams.SetSignals(_params.ADX_SignalOpenMethod, _params.ADX_SignalOpenLevel, _params.ADX_SignalCloseMethod,
                        _params.ADX_SignalCloseLevel);
-    sparams.SetStops(_params.ADX_TrailingProfitMethod, _params.ADX_TrailingStopMethod);
     sparams.SetMaxSpread(_params.ADX_MaxSpread);
     // Initialize strategy instance.
     Strategy *_strat = new Stg_ADX(sparams, "ADX");
@@ -124,7 +112,7 @@ class Stg_ADX : public Strategy {
   /**
    * Check strategy's opening signal.
    */
-  bool SignalOpen(ENUM_ORDER_TYPE _cmd, long _signal_method = EMPTY, double _signal_level = EMPTY) {
+  bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, double _level = 0.0) {
     bool _result = false;
     double adx_0_main = ((Indi_ADX *)this.Data()).GetValue(LINE_MAIN_ADX, 0);
     double adx_0_plusdi = ((Indi_ADX *)this.Data()).GetValue(LINE_PLUSDI, 0);
@@ -135,20 +123,18 @@ class Stg_ADX : public Strategy {
     double adx_2_main = ((Indi_ADX *)this.Data()).GetValue(LINE_MAIN_ADX, 2);
     double adx_2_plusdi = ((Indi_ADX *)this.Data()).GetValue(LINE_PLUSDI, 2);
     double adx_2_minusdi = ((Indi_ADX *)this.Data()).GetValue(LINE_MINUSDI, 2);
-    if (_signal_method == EMPTY) _signal_method = GetSignalBaseMethod();
-    if (_signal_level == EMPTY) _signal_level = GetSignalOpenLevel();
     switch (_cmd) {
       // Buy: +DI line is above -DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
       case ORDER_TYPE_BUY:
-        _result = adx_0_minusdi < adx_0_plusdi && adx_0_main >= _signal_level;
-        if (METHOD(_signal_method, 0)) _result &= adx_0_main > adx_1_main;
-        if (METHOD(_signal_method, 1)) _result &= adx_1_main > adx_2_main;
+        _result = adx_0_minusdi < adx_0_plusdi && adx_0_main >= _level;
+        if (METHOD(_method, 0)) _result &= adx_0_main > adx_1_main;
+        if (METHOD(_method, 1)) _result &= adx_1_main > adx_2_main;
         break;
       // Sell: -DI line is above +DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
       case ORDER_TYPE_SELL:
-        _result = adx_0_minusdi > adx_0_plusdi && adx_0_main >= _signal_level;
-        if (METHOD(_signal_method, 0)) _result &= adx_0_main > adx_1_main;
-        if (METHOD(_signal_method, 1)) _result &= adx_1_main > adx_2_main;
+        _result = adx_0_minusdi > adx_0_plusdi && adx_0_main >= _level;
+        if (METHOD(_method, 0)) _result &= adx_0_main > adx_1_main;
+        if (METHOD(_method, 1)) _result &= adx_1_main > adx_2_main;
         break;
     }
     return _result;
@@ -157,8 +143,23 @@ class Stg_ADX : public Strategy {
   /**
    * Check strategy's closing signal.
    */
-  bool SignalClose(ENUM_ORDER_TYPE _cmd, long _signal_method = EMPTY, double _signal_level = EMPTY) {
-    if (_signal_level == EMPTY) _signal_level = GetSignalCloseLevel();
-    return SignalOpen(Order::NegateOrderType(_cmd), _signal_method, _signal_level);
+  bool SignalClose(ENUM_ORDER_TYPE _cmd, int _method = 0, double _level = 0.0) {
+    return SignalOpen(Order::NegateOrderType(_cmd), _method, _level);
+  }
+
+  /**
+   * Gets price limit value for profit take or stop loss.
+   */
+  double PriceLimit(ENUM_ORDER_TYPE _cmd, ENUM_STG_PRICE_LIMIT_MODE _mode, int _method = 0, double _level = 0.0) {
+    double _trail = _level * Market().GetPipSize();
+    int _direction = Order::OrderDirection(_cmd) * (_mode == LIMIT_VALUE_STOP ? -1 : 1);
+    double _default_value = Market().GetCloseOffer(_cmd) + _trail * _method * _direction;
+    double _result = _default_value;
+    switch (_method) {
+      case 0: {
+        // @todo
+      }
+    }
+    return _result;
   }
 };

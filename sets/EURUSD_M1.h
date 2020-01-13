@@ -12,15 +12,12 @@ struct Stg_ADX_EURUSD_M1_Params : Stg_ADX_Params {
     ADX_Period = 14;
     ADX_Applied_Price = 1;
     ADX_Shift = 0;
-    ADX_TrailingStopMethod = 0;
-    ADX_TrailingProfitMethod = 0;
+    ADX_SignalOpenMethod = 0;
     ADX_SignalOpenLevel = 0;
-    ADX_SignalBaseMethod = 0;
-    ADX_SignalOpenMethod1 = 0;
-    ADX_SignalOpenMethod2 = 0;
+    ADX_SignalCloseMethod = 0;
     ADX_SignalCloseLevel = 0;
-    ADX_SignalCloseMethod1 = 0;
-    ADX_SignalCloseMethod2 = 0;
+    ADX_PriceLimitMethod = 0;
+    ADX_PriceLimitLevel = 0;
     ADX_MaxSpread = 0;
   }
 };
