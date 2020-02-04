@@ -20,6 +20,8 @@ INPUT ENUM_APPLIED_PRICE ADX_Applied_Price = PRICE_HIGH;        // Applied price
 INPUT int ADX_Shift = 0;                                        // Shift (relative to the current bar, 0 - default)
 INPUT int ADX_SignalOpenMethod = 0;                             // Signal open method (0-1)
 INPUT double ADX_SignalOpenLevel = 0.0004;                      // Signal open level (>0.0001)
+INPUT int ADX_SignalOpenFilterMethod = 0;                       // Signal open filter method
+INPUT int ADX_SignalOpenBoostMethod = 0;                        // Signal open boost method
 INPUT int ADX_SignalCloseMethod = 0;                            // Signal close method
 INPUT double ADX_SignalCloseLevel = 0.0004;                     // Signal close level (>0.0001)
 INPUT int ADX_PriceLimitMethod = 0;                             // Price limit method
@@ -33,6 +35,8 @@ struct Stg_ADX_Params : Stg_Params {
   int ADX_Shift;
   int ADX_SignalOpenMethod;
   double ADX_SignalOpenLevel;
+  int ADX_SignalOpenFilterMethod;
+  int ADX_SignalOpenBoostMethod;
   int ADX_SignalCloseMethod;
   double ADX_SignalCloseLevel;
   int ADX_PriceLimitMethod;
@@ -46,6 +50,8 @@ struct Stg_ADX_Params : Stg_Params {
         ADX_Shift(::ADX_Shift),
         ADX_SignalOpenMethod(::ADX_SignalOpenMethod),
         ADX_SignalOpenLevel(::ADX_SignalOpenLevel),
+        ADX_SignalOpenFilterMethod(::ADX_SignalOpenFilterMethod),
+        ADX_SignalOpenBoostMethod(::ADX_SignalOpenBoostMethod),
         ADX_SignalCloseMethod(::ADX_SignalCloseMethod),
         ADX_SignalCloseLevel(::ADX_SignalCloseLevel),
         ADX_PriceLimitMethod(::ADX_PriceLimitMethod),
@@ -101,8 +107,8 @@ class Stg_ADX : public Strategy {
     StgParams sparams(new Trade(_tf, _Symbol), new Indi_ADX(adx_params, adx_iparams, cparams), NULL, NULL);
     sparams.logger.SetLevel(_log_level);
     sparams.SetMagicNo(_magic_no);
-    sparams.SetSignals(_params.ADX_SignalOpenMethod, _params.ADX_SignalOpenLevel, _params.ADX_SignalCloseMethod,
-                       _params.ADX_SignalCloseLevel);
+    sparams.SetSignals(_params.ADX_SignalOpenMethod, _params.ADX_SignalOpenLevel, _params.ADX_SignalOpenFilterMethod,
+                       _params.ADX_SignalOpenBoostMethod, _params.ADX_SignalCloseMethod, _params.ADX_SignalCloseLevel);
     sparams.SetMaxSpread(_params.ADX_MaxSpread);
     // Initialize strategy instance.
     Strategy *_strat = new Stg_ADX(sparams, "ADX");
@@ -141,6 +147,38 @@ class Stg_ADX : public Strategy {
   }
 
   /**
+   * Check strategy's opening signal additional filter.
+   */
+  bool SignalOpenFilter(ENUM_ORDER_TYPE _cmd, int _method = 0) {
+    bool _result = true;
+    if (_method != 0) {
+      // if (METHOD(_method, 0)) _result &= Trade().IsTrend(_cmd);
+      // if (METHOD(_method, 1)) _result &= Trade().IsPivot(_cmd);
+      // if (METHOD(_method, 2)) _result &= Trade().IsPeakHours(_cmd);
+      // if (METHOD(_method, 3)) _result &= Trade().IsRoundNumber(_cmd);
+      // if (METHOD(_method, 4)) _result &= Trade().IsHedging(_cmd);
+      // if (METHOD(_method, 5)) _result &= Trade().IsPeakBar(_cmd);
+    }
+    return _result;
+  }
+
+  /**
+   * Gets strategy's lot size boost (when enabled).
+   */
+  double SignalOpenBoost(ENUM_ORDER_TYPE _cmd, int _method = 0) {
+    bool _result = 1.0;
+    if (_method != 0) {
+      // if (METHOD(_method, 0)) if (Trade().IsTrend(_cmd)) _result *= 1.1;
+      // if (METHOD(_method, 1)) if (Trade().IsPivot(_cmd)) _result *= 1.1;
+      // if (METHOD(_method, 2)) if (Trade().IsPeakHours(_cmd)) _result *= 1.1;
+      // if (METHOD(_method, 3)) if (Trade().IsRoundNumber(_cmd)) _result *= 1.1;
+      // if (METHOD(_method, 4)) if (Trade().IsHedging(_cmd)) _result *= 1.1;
+      // if (METHOD(_method, 5)) if (Trade().IsPeakBar(_cmd)) _result *= 1.1;
+    }
+    return _result;
+  }
+
+  /**
    * Check strategy's closing signal.
    */
   bool SignalClose(ENUM_ORDER_TYPE _cmd, int _method = 0, double _level = 0.0) {
@@ -150,9 +188,9 @@ class Stg_ADX : public Strategy {
   /**
    * Gets price limit value for profit take or stop loss.
    */
-  double PriceLimit(ENUM_ORDER_TYPE _cmd, ENUM_STG_PRICE_LIMIT_MODE _mode, int _method = 0, double _level = 0.0) {
+  double PriceLimit(ENUM_ORDER_TYPE _cmd, ENUM_ORDER_TYPE_VALUE _mode, int _method = 0, double _level = 0.0) {
     double _trail = _level * Market().GetPipSize();
-    int _direction = Order::OrderDirection(_cmd) * (_mode == LIMIT_VALUE_STOP ? -1 : 1);
+    int _direction = Order::OrderDirection(_cmd) * (_mode == ORDER_TYPE_SL ? -1 : 1);
     double _default_value = Market().GetCloseOffer(_cmd) + _trail * _method * _direction;
     double _result = _default_value;
     switch (_method) {
