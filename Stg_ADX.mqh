@@ -25,7 +25,7 @@ INPUT int ADX_SignalOpenBoostMethod = 0;                        // Signal open b
 INPUT int ADX_SignalCloseMethod = 0;                            // Signal close method
 INPUT double ADX_SignalCloseLevel = 0.0004;                     // Signal close level (>0.0001)
 INPUT int ADX_PriceLimitMethod = 0;                             // Price limit method
-INPUT double ADX_PriceLimitLevel = 0;                           // Price limit level
+INPUT double ADX_PriceLimitLevel = 2;                           // Price limit level
 INPUT double ADX_MaxSpread = 6.0;                               // Max spread to trade (pips)
 
 // Struct to define strategy parameters to override.
@@ -86,6 +86,7 @@ class Stg_ADX : public Strategy {
     sparams.SetMagicNo(_magic_no);
     sparams.SetSignals(_params.ADX_SignalOpenMethod, _params.ADX_SignalOpenLevel, _params.ADX_SignalOpenFilterMethod,
                        _params.ADX_SignalOpenBoostMethod, _params.ADX_SignalCloseMethod, _params.ADX_SignalCloseLevel);
+    sparams.SetPriceLimits(_params.ADX_PriceLimitMethod, _params.ADX_PriceLimitLevel);
     sparams.SetMaxSpread(_params.ADX_MaxSpread);
     // Initialize strategy instance.
     Strategy *_strat = new Stg_ADX(sparams, "ADX");
@@ -96,7 +97,7 @@ class Stg_ADX : public Strategy {
    * Check strategy's opening signal.
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, double _level = 0.0) {
-    Indicator *_indi = Data();
+    Indi_ADX *_indi = Data();
     bool _is_valid = _indi[CURR].IsValid();
     bool _result = _is_valid;
     switch (_cmd) {
@@ -159,16 +160,22 @@ class Stg_ADX : public Strategy {
    * Gets price limit value for profit take or stop loss.
    */
   double PriceLimit(ENUM_ORDER_TYPE _cmd, ENUM_ORDER_TYPE_VALUE _mode, int _method = 0, double _level = 0.0) {
-    Indicator *_indi = Data();
+    Indi_ADX *_indi = Data();
     bool _is_valid = _indi[CURR].IsValid();
     double _trail = _level * Market().GetPipSize();
+    int _bar_count = (int) _level * (int) _indi.GetPeriod();
+    int _bar_lowest = _indi.GetLowest(_bar_count), _bar_highest = _indi.GetHighest(_bar_count);
     int _direction = Order::OrderDirection(_cmd, _mode);
     double _default_value = Market().GetCloseOffer(_cmd) + _trail * _method * _direction;
     double _result = _default_value;
+    ENUM_APPLIED_PRICE _ap = _direction > 0 ? PRICE_HIGH : PRICE_LOW;
     switch (_method) {
-      case 0: {
-        // @todo
-      }
+      case 0:
+        _result = _direction > 0 ? _indi.GetPrice(_ap, _bar_highest) : _indi.GetPrice(_ap, _bar_lowest);
+        break;
+      case 1:
+        _result = _direction > 0 ? fmax(_indi.GetPrice(_ap, _bar_lowest), _indi.GetPrice(_ap, _bar_highest)) : fmin(_indi.GetPrice(_ap, _bar_lowest), _indi.GetPrice(_ap, _bar_highest));
+        break;
     }
     return _result;
   }

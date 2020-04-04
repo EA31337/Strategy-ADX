@@ -15,7 +15,7 @@ struct Stg_ADX_EURUSD_H4_Params : Stg_ADX_Params {
     ADX_SignalCloseMethod = 0;
     ADX_SignalCloseLevel = 0;
     ADX_PriceLimitMethod = 0;
-    ADX_PriceLimitLevel = 0;
+    ADX_PriceLimitLevel = 2;
     ADX_MaxSpread = 0;
   }
 } stg_adx_h4;
