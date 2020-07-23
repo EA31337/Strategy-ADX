@@ -82,7 +82,7 @@ class Stg_ADX : public Strategy {
     ADXParams adx_params(_params.ADX_Period, _params.ADX_Applied_Price);
     adx_params.SetTf(_tf);
     StgParams sparams(new Trade(_tf, _Symbol), new Indi_ADX(adx_params), NULL, NULL);
-    sparams.logger.SetLevel(_log_level);
+    sparams.logger.Ptr().SetLevel(_log_level);
     sparams.SetMagicNo(_magic_no);
     sparams.SetSignals(_params.ADX_SignalOpenMethod, _params.ADX_SignalOpenLevel, _params.ADX_SignalOpenFilterMethod,
                        _params.ADX_SignalOpenBoostMethod, _params.ADX_SignalCloseMethod, _params.ADX_SignalCloseLevel);
