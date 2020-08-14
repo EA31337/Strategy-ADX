@@ -8,14 +8,14 @@ INPUT int ADX_Period = 14;                                // Averaging period
 INPUT ENUM_APPLIED_PRICE ADX_Applied_Price = PRICE_HIGH;  // Applied price.
 INPUT int ADX_Shift = 0;                                  // Shift (relative to the current bar, 0 - default)
 INPUT int ADX_SignalOpenMethod = 0;                       // Signal open method
-INPUT float ADX_SignalOpenLevel = 0.0004;                // Signal open level (>0.0001)
+INPUT float ADX_SignalOpenLevel = 0.0004f;                // Signal open level (>0.0001)
 INPUT int ADX_SignalOpenFilterMethod = 0;                 // Signal open filter method
 INPUT int ADX_SignalOpenBoostMethod = 0;                  // Signal open boost method
 INPUT int ADX_SignalCloseMethod = 0;                      // Signal close method
-INPUT float ADX_SignalCloseLevel = 0.0004;               // Signal close level (>0.0001)
+INPUT float ADX_SignalCloseLevel = 0.0004f;               // Signal close level (>0.0001)
 INPUT int ADX_PriceLimitMethod = 0;                       // Price limit method
-INPUT float ADX_PriceLimitLevel = 2;                     // Price limit level
-INPUT float ADX_MaxSpread = 6.0;                         // Max spread to trade (pips)
+INPUT float ADX_PriceLimitLevel = 2;                      // Price limit level
+INPUT float ADX_MaxSpread = 6.0;                          // Max spread to trade (pips)
 
 // Includes.
 #include <EA31337-classes/Indicators/Indi_ADX.mqh>
@@ -27,14 +27,14 @@ struct Stg_ADX_Params : StgParams {
   ENUM_APPLIED_PRICE ADX_Applied_Price;
   int ADX_Shift;
   int ADX_SignalOpenMethod;
-  double ADX_SignalOpenLevel;
+  float ADX_SignalOpenLevel;
   int ADX_SignalOpenFilterMethod;
   int ADX_SignalOpenBoostMethod;
   int ADX_SignalCloseMethod;
-  double ADX_SignalCloseLevel;
+  float ADX_SignalCloseLevel;
   int ADX_PriceLimitMethod;
-  double ADX_PriceLimitLevel;
-  double ADX_MaxSpread;
+  float ADX_PriceLimitLevel;
+  float ADX_MaxSpread;
 
   // Constructor: Set default param values.
   Stg_ADX_Params()
@@ -134,6 +134,6 @@ class Stg_ADX : public Strategy {
                                  : fmin(_indi.GetPrice(_ap, _bar_lowest), _indi.GetPrice(_ap, _bar_highest));
         break;
     }
-    return _result;
+    return (float)_result;
   }
 };
