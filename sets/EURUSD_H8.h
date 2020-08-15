@@ -4,14 +4,14 @@
  */
 
 // Defines indicator's parameter values for the given pair symbol and timeframe.
-struct Indi_ADX_Params_M30 : Indi_ADX_Params {
-  Indi_ADX_Params_M30() : Indi_ADX_Params(indi_adx_defaults, PERIOD_M30) { shift = 0; }
-} indi_adx_m30;
+struct Indi_ADX_Params_H8 : Indi_ADX_Params {
+  Indi_ADX_Params_H8() : Indi_ADX_Params(indi_adx_defaults, PERIOD_H8) { shift = 0; }
+} indi_adx_h8;
 
 // Defines strategy's parameter values for the given pair symbol and timeframe.
-struct Stg_ADX_Params_M30 : StgParams {
+struct Stg_ADX_Params_H8 : StgParams {
   // Struct constructor.
-  Stg_ADX_Params_M30() : StgParams(stg_adx_defaults) {
+  Stg_ADX_Params_H8() : StgParams(stg_adx_defaults) {
     lot_size = 0;
     signal_open_method = 0;
     signal_open_filter = 1;
@@ -24,4 +24,4 @@ struct Stg_ADX_Params_M30 : StgParams {
     tick_filter_method = 1;
     max_spread = 0;
   }
-} stg_adx_m30;
+} stg_adx_h8;

@@ -3,58 +3,66 @@
  * Implements ADX strategy based on the Average Directional Movement Index indicator.
  */
 
-// User input params.
-INPUT int ADX_Period = 14;                                // Averaging period
-INPUT ENUM_APPLIED_PRICE ADX_Applied_Price = PRICE_HIGH;  // Applied price.
-INPUT int ADX_Shift = 0;                                  // Shift (relative to the current bar, 0 - default)
-INPUT int ADX_SignalOpenMethod = 0;                       // Signal open method
-INPUT float ADX_SignalOpenLevel = 0.0004f;                // Signal open level (>0.0001)
-INPUT int ADX_SignalOpenFilterMethod = 0;                 // Signal open filter method
-INPUT int ADX_SignalOpenBoostMethod = 0;                  // Signal open boost method
-INPUT int ADX_SignalCloseMethod = 0;                      // Signal close method
-INPUT float ADX_SignalCloseLevel = 0.0004f;               // Signal close level (>0.0001)
-INPUT int ADX_PriceLimitMethod = 0;                       // Price limit method
-INPUT float ADX_PriceLimitLevel = 2;                      // Price limit level
-INPUT float ADX_MaxSpread = 6.0;                          // Max spread to trade (pips)
-
 // Includes.
 #include <EA31337-classes/Indicators/Indi_ADX.mqh>
 #include <EA31337-classes/Strategy.mqh>
 
+// User input params.
+INPUT float ADX_LotSize = 0;                 // Lot size
+INPUT int ADX_SignalOpenMethod = 0;          // Signal open method
+INPUT float ADX_SignalOpenLevel = 0.0004f;   // Signal open level (>0.0001)
+INPUT int ADX_SignalOpenFilterMethod = 0;    // Signal open filter method
+INPUT int ADX_SignalOpenBoostMethod = 0;     // Signal open boost method
+INPUT int ADX_SignalCloseMethod = 0;         // Signal close method
+INPUT float ADX_SignalCloseLevel = 0.0004f;  // Signal close level (>0.0001)
+INPUT int ADX_PriceLimitMethod = 0;          // Price limit method
+INPUT float ADX_PriceLimitLevel = 2;         // Price limit level
+INPUT int ADX_TickFilterMethod = 0;          // Tick filter method
+INPUT float ADX_MaxSpread = 6.0;             // Max spread to trade (pips)
+INPUT int ADX_Shift = 0;                     // Shift (relative to the current bar, 0 - default)
+INPUT string __ADX_Indi_ADX_Parameters__ =
+    "-- ADX strategy: ADX indicator params --";                // >>> ADX strategy: ADX indicator <<<
+INPUT int Indi_ADX_Period = 14;                                // Averaging period
+INPUT ENUM_APPLIED_PRICE Indi_ADX_Applied_Price = PRICE_HIGH;  // Applied price.
+
+// Structs.
+
+// Defines struct with default user indicator values.
+struct Indi_ADX_Params_Defaults : ADXParams {
+  Indi_ADX_Params_Defaults() : ADXParams(::Indi_ADX_Period, ::Indi_ADX_Applied_Price) {}
+} indi_adx_defaults;
+
+// Defines struct to store indicator parameter values.
+struct Indi_ADX_Params : public ADXParams {
+  // Struct constructors.
+  void Indi_ADX_Params(ADXParams &_params, ENUM_TIMEFRAMES _tf) : ADXParams(_params, _tf) {}
+};
+
+// Defines struct with default user strategy values.
+struct Stg_ADX_Params_Defaults : StgParams {
+  Stg_ADX_Params_Defaults()
+      : StgParams(::ADX_SignalOpenMethod, ::ADX_SignalOpenFilterMethod, ::ADX_SignalOpenLevel,
+                  ::ADX_SignalOpenBoostMethod, ::ADX_SignalCloseMethod, ::ADX_SignalCloseLevel, ::ADX_PriceLimitMethod,
+                  ::ADX_PriceLimitLevel, ::ADX_TickFilterMethod, ::ADX_MaxSpread, ::ADX_Shift) {}
+} stg_adx_defaults;
+
 // Struct to define strategy parameters to override.
 struct Stg_ADX_Params : StgParams {
-  unsigned int ADX_Period;
-  ENUM_APPLIED_PRICE ADX_Applied_Price;
-  int ADX_Shift;
-  int ADX_SignalOpenMethod;
-  float ADX_SignalOpenLevel;
-  int ADX_SignalOpenFilterMethod;
-  int ADX_SignalOpenBoostMethod;
-  int ADX_SignalCloseMethod;
-  float ADX_SignalCloseLevel;
-  int ADX_PriceLimitMethod;
-  float ADX_PriceLimitLevel;
-  float ADX_MaxSpread;
+  Indi_ADX_Params iparams;
+  StgParams sparams;
 
-  // Constructor: Set default param values.
-  Stg_ADX_Params()
-      : ADX_Period(::ADX_Period),
-        ADX_Applied_Price(::ADX_Applied_Price),
-        ADX_Shift(::ADX_Shift),
-        ADX_SignalOpenMethod(::ADX_SignalOpenMethod),
-        ADX_SignalOpenLevel(::ADX_SignalOpenLevel),
-        ADX_SignalOpenFilterMethod(::ADX_SignalOpenFilterMethod),
-        ADX_SignalOpenBoostMethod(::ADX_SignalOpenBoostMethod),
-        ADX_SignalCloseMethod(::ADX_SignalCloseMethod),
-        ADX_SignalCloseLevel(::ADX_SignalCloseLevel),
-        ADX_PriceLimitMethod(::ADX_PriceLimitMethod),
-        ADX_PriceLimitLevel(::ADX_PriceLimitLevel),
-        ADX_MaxSpread(::ADX_MaxSpread) {}
+  // Struct constructors.
+  Stg_ADX_Params(Indi_ADX_Params &_iparams, StgParams &_sparams)
+      : iparams(indi_adx_defaults, _iparams.tf), sparams(stg_adx_defaults) {
+    iparams = _iparams;
+    sparams = _sparams;
+  }
 };
 
 // Loads pair specific param values.
 #include "sets/EURUSD_H1.h"
 #include "sets/EURUSD_H4.h"
+#include "sets/EURUSD_H8.h"
 #include "sets/EURUSD_M1.h"
 #include "sets/EURUSD_M15.h"
 #include "sets/EURUSD_M30.h"
@@ -66,23 +74,24 @@ class Stg_ADX : public Strategy {
 
   static Stg_ADX *Init(ENUM_TIMEFRAMES _tf = NULL, long _magic_no = NULL, ENUM_LOG_LEVEL _log_level = V_INFO) {
     // Initialize strategy initial values.
-    Stg_ADX_Params _params;
+    Indi_ADX_Params _indi_params(indi_adx_defaults, _tf);
+    StgParams _stg_params(stg_adx_defaults);
     if (!Terminal::IsOptimization()) {
-      SetParamsByTf<Stg_ADX_Params>(_params, _tf, stg_adx_m1, stg_adx_m5, stg_adx_m15, stg_adx_m30, stg_adx_h1,
-                                    stg_adx_h4, stg_adx_h4);
+      SetParamsByTf<Indi_ADX_Params>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30,
+                                     indi_adx_h1, indi_adx_h4, indi_adx_h8);
+      SetParamsByTf<StgParams>(_stg_params, _tf, stg_adx_m1, stg_adx_m5, stg_adx_m15, stg_adx_m30, stg_adx_h1,
+                               stg_adx_h4, stg_adx_h8);
     }
+    // Initialize indicator.
+    ADXParams adx_params(_indi_params);
+    _stg_params.SetIndicator(new Indi_ADX(_indi_params));
     // Initialize strategy parameters.
-    ADXParams adx_params(_params.ADX_Period, _params.ADX_Applied_Price);
-    adx_params.SetTf(_tf);
-    StgParams sparams(new Trade(_tf, _Symbol), new Indi_ADX(adx_params), NULL, NULL);
-    sparams.logger.Ptr().SetLevel(_log_level);
-    sparams.SetMagicNo(_magic_no);
-    sparams.SetSignals(_params.ADX_SignalOpenMethod, _params.ADX_SignalOpenLevel, _params.ADX_SignalOpenFilterMethod,
-                       _params.ADX_SignalOpenBoostMethod, _params.ADX_SignalCloseMethod, _params.ADX_SignalCloseLevel);
-    sparams.SetPriceLimits(_params.ADX_PriceLimitMethod, _params.ADX_PriceLimitLevel);
-    sparams.SetMaxSpread(_params.ADX_MaxSpread);
+    _stg_params.GetLog().SetLevel(_log_level);
+    _stg_params.SetMagicNo(_magic_no);
+    _stg_params.SetTf(_tf, _Symbol);
     // Initialize strategy instance.
-    Strategy *_strat = new Stg_ADX(sparams, "ADX");
+    Strategy *_strat = new Stg_ADX(_stg_params, "ADX");
+    _stg_params.SetStops(_strat, _strat);
     return _strat;
   }
 
