@@ -15,8 +15,8 @@ INPUT int ADX_SignalOpenFilterMethod = 0;    // Signal open filter method
 INPUT int ADX_SignalOpenBoostMethod = 0;     // Signal open boost method
 INPUT int ADX_SignalCloseMethod = 0;         // Signal close method
 INPUT float ADX_SignalCloseLevel = 0.0004f;  // Signal close level (>0.0001)
-INPUT int ADX_PriceLimitMethod = 0;          // Price limit method
-INPUT float ADX_PriceLimitLevel = 2;         // Price limit level
+INPUT int ADX_PriceStopMethod = 0;           // Price stop method
+INPUT float ADX_PriceStopLevel = 2;          // Price stop level
 INPUT int ADX_TickFilterMethod = 0;          // Tick filter method
 INPUT float ADX_MaxSpread = 6.0;             // Max spread to trade (pips)
 INPUT int ADX_Shift = 0;                     // Shift (relative to the current bar, 0 - default)
@@ -42,8 +42,8 @@ struct Indi_ADX_Params : public ADXParams {
 struct Stg_ADX_Params_Defaults : StgParams {
   Stg_ADX_Params_Defaults()
       : StgParams(::ADX_SignalOpenMethod, ::ADX_SignalOpenFilterMethod, ::ADX_SignalOpenLevel,
-                  ::ADX_SignalOpenBoostMethod, ::ADX_SignalCloseMethod, ::ADX_SignalCloseLevel, ::ADX_PriceLimitMethod,
-                  ::ADX_PriceLimitLevel, ::ADX_TickFilterMethod, ::ADX_MaxSpread, ::ADX_Shift) {}
+                  ::ADX_SignalOpenBoostMethod, ::ADX_SignalCloseMethod, ::ADX_SignalCloseLevel, ::ADX_PriceStopMethod,
+                  ::ADX_PriceStopLevel, ::ADX_TickFilterMethod, ::ADX_MaxSpread, ::ADX_Shift) {}
 } stg_adx_defaults;
 
 // Struct to define strategy parameters to override.
@@ -122,9 +122,9 @@ class Stg_ADX : public Strategy {
   }
 
   /**
-   * Gets price limit value for profit take or stop loss.
+   * Gets price stop value for profit take or stop loss.
    */
-  float PriceLimit(ENUM_ORDER_TYPE _cmd, ENUM_ORDER_TYPE_VALUE _mode, int _method = 0, float _level = 0.0) {
+  float PriceStop(ENUM_ORDER_TYPE _cmd, ENUM_ORDER_TYPE_VALUE _mode, int _method = 0, float _level = 0.0) {
     Indi_ADX *_indi = Data();
     bool _is_valid = _indi[CURR].IsValid();
     double _trail = _level * Market().GetPipSize();
