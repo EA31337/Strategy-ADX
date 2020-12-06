@@ -3,10 +3,6 @@
  * Implements ADX strategy based on the Average Directional Movement Index indicator.
  */
 
-// Includes.
-#include <EA31337-classes/Indicators/Indi_ADX.mqh>
-#include <EA31337-classes/Strategy.mqh>
-
 // User input params.
 INPUT float ADX_LotSize = 0;                 // Lot size
 INPUT int ADX_SignalOpenMethod = 0;          // Signal open method
