@@ -127,7 +127,7 @@ class Stg_ADX : public Strategy {
     bool _is_valid = _indi[CURR].IsValid();
     double _trail = _level * Market().GetPipSize();
     int _bar_count = (int)_level * (int)_indi.GetPeriod();
-    int _bar_lowest = _indi.GetLowest(_bar_count), _bar_highest = _indi.GetHighest(_bar_count);
+    int _bar_lowest = _indi.GetLowest<double>(_bar_count), _bar_highest = _indi.GetHighest<double>(_bar_count);
     int _direction = Order::OrderDirection(_cmd, _mode);
     double _default_value = Market().GetCloseOffer(_cmd) + _trail * _method * _direction;
     double _result = _default_value;
