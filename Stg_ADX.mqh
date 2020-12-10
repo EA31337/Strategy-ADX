@@ -101,15 +101,17 @@ class Stg_ADX : public Strategy {
     switch (_cmd) {
       // Buy: +DI line is above -DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
       case ORDER_TYPE_BUY:
-        _result &= _indi[CURR][LINE_MINUSDI] < _indi[CURR][LINE_PLUSDI] && _indi[CURR][LINE_MAIN_ADX] >= _level;
-        if (METHOD(_method, 0)) _result &= _indi[CURR][LINE_MAIN_ADX] > _indi[PREV][LINE_MAIN_ADX];
-        if (METHOD(_method, 1)) _result &= _indi[PREV][LINE_MAIN_ADX] > _indi[PPREV][LINE_MAIN_ADX];
+        _result &=
+            _indi[CURR][(int)LINE_MINUSDI] < _indi[CURR][(int)LINE_PLUSDI] && _indi[CURR][(int)LINE_MAIN_ADX] >= _level;
+        if (METHOD(_method, 0)) _result &= _indi[CURR][(int)LINE_MAIN_ADX] > _indi[PREV][(int)LINE_MAIN_ADX];
+        if (METHOD(_method, 1)) _result &= _indi[PREV][(int)LINE_MAIN_ADX] > _indi[PPREV][(int)LINE_MAIN_ADX];
         break;
       // Sell: -DI line is above +DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
       case ORDER_TYPE_SELL:
-        _result &= _indi[CURR][LINE_MINUSDI] > _indi[CURR][LINE_PLUSDI] && _indi[CURR][LINE_MAIN_ADX] >= _level;
-        if (METHOD(_method, 0)) _result &= _indi[CURR][LINE_MAIN_ADX] > _indi[PREV][LINE_MAIN_ADX];
-        if (METHOD(_method, 1)) _result &= _indi[PREV][LINE_MAIN_ADX] > _indi[PPREV][LINE_MAIN_ADX];
+        _result &=
+            _indi[CURR][(int)LINE_MINUSDI] > _indi[CURR][(int)LINE_PLUSDI] && _indi[CURR][(int)LINE_MAIN_ADX] >= _level;
+        if (METHOD(_method, 0)) _result &= _indi[CURR][(int)LINE_MAIN_ADX] > _indi[PREV][(int)LINE_MAIN_ADX];
+        if (METHOD(_method, 1)) _result &= _indi[PREV][(int)LINE_MAIN_ADX] > _indi[PPREV][(int)LINE_MAIN_ADX];
         break;
     }
     return _result;
