@@ -5,8 +5,8 @@ name: Optimize Indi_ADX_Applied_Price
 on:
   push:
     branches:
-      - 'optimize-indi-rsi-applied-price'
-      - 'optimize-indi-rsi-applied-price-*'
+      - 'optimize-indi-adx-applied-price'
+      - 'optimize-indi-adx-applied-price-*'
 
 jobs:
   Compile:

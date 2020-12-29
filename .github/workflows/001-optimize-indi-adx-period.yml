@@ -5,8 +5,8 @@ name: Optimize Indi_ADX_Period
 on:
   push:
     branches:
-      - 'optimize-indi-rsi-period'
-      - 'optimize-indi-rsi-period-*'
+      - 'optimize-indi-adx-period'
+      - 'optimize-indi-adx-period-*'
 
 jobs:
   Compile:
