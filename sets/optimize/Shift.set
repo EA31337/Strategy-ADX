@@ -1,0 +1,7 @@
+; Optimize strategy shift param.
+ADX_Shift,1=0
+ADX_Shift,2=1
+ADX_Shift,3=1
+ADX_Shift,F=1
+ADX_SignalOpenFilterMethod=1
+ADX_TickFilterMethod=1

@@ -1,0 +1,7 @@
+; Optimize price stop level param.
+ADX_PriceStopLevel,1=10
+ADX_PriceStopLevel,2=5
+ADX_PriceStopLevel,3=40
+ADX_PriceStopLevel,F=1
+ADX_SignalOpenFilterMethod=1
+ADX_TickFilterMethod=1

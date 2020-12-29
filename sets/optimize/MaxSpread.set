@@ -1,0 +1,7 @@
+; Optimize max spread param.
+ADX_MaxSpread,1=10
+ADX_MaxSpread,2=10
+ADX_MaxSpread,3=40
+ADX_MaxSpread,F=1
+ADX_SignalOpenFilterMethod=1
+ADX_TickFilterMethod=1

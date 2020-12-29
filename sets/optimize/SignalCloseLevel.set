@@ -1,0 +1,7 @@
+; Optimize signal close level param.
+ADX_SignalCloseLevel,1=10
+ADX_SignalCloseLevel,2=5
+ADX_SignalCloseLevel,3=40
+ADX_SignalCloseLevel,F=1
+ADX_SignalOpenFilterMethod=1
+ADX_TickFilterMethod=1

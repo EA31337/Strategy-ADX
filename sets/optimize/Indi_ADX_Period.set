@@ -1,0 +1,7 @@
+; Optimize strategy indicator's ADX period param.
+ADX_Indi_ADX_Period,1=4
+ADX_Indi_ADX_Period,2=4
+ADX_Indi_ADX_Period,3=24
+ADX_Indi_ADX_Period,F=1
+ADX_SignalOpenFilterMethod=1
+ADX_TickFilterMethod=1

@@ -1,0 +1,7 @@
+; Optimize signal open method param.
+ADX_SignalOpenFilterMethod=1
+ADX_SignalOpenMethod,1=-4
+ADX_SignalOpenMethod,2=1
+ADX_SignalOpenMethod,3=4
+ADX_SignalOpenMethod,F=1
+ADX_TickFilterMethod=1

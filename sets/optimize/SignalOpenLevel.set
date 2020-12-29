@@ -1,0 +1,7 @@
+; Optimize signal open level param.
+ADX_SignalOpenFilterMethod=1
+ADX_SignalOpenLevel,1=10
+ADX_SignalOpenLevel,2=5
+ADX_SignalOpenLevel,3=40
+ADX_SignalOpenLevel,F=1
+ADX_TickFilterMethod=1

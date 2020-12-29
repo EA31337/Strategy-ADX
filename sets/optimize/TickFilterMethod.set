@@ -1,0 +1,6 @@
+; Optimize tick filter method param.
+ADX_SignalOpenFilterMethod=1
+ADX_TickFilterMethod,1=1
+ADX_TickFilterMethod,2=1
+ADX_TickFilterMethod,3=32
+ADX_TickFilterMethod,F=1

@@ -1,0 +1,7 @@
+; Optimize price stop method param.
+ADX_PriceStopMethod,1=0
+ADX_PriceStopMethod,2=1
+ADX_PriceStopMethod,3=4
+ADX_PriceStopMethod,F=1
+ADX_SignalOpenFilterMethod=1
+ADX_TickFilterMethod=1

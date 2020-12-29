@@ -1,0 +1,7 @@
+; Optimize signal close method param.
+ADX_SignalCloseMethod,1=-4
+ADX_SignalCloseMethod,2=1
+ADX_SignalCloseMethod,3=4
+ADX_SignalCloseMethod,F=1
+ADX_SignalOpenFilterMethod=1
+ADX_TickFilterMethod=1
