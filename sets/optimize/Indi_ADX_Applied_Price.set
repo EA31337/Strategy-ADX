@@ -1,7 +1,7 @@
 ; Optimize strategy indicator's ADX applied price param.
-Indi_ADX_Applied_Price,1=0
-Indi_ADX_Applied_Price,2=0
-Indi_ADX_Applied_Price,3=6
-Indi_ADX_Applied_Price,F=1
+ADX_Indi_ADX_Applied_Price,1=0
+ADX_Indi_ADX_Applied_Price,2=0
+ADX_Indi_ADX_Applied_Price,3=6
+ADX_Indi_ADX_Applied_Price,F=1
 ADX_SignalOpenFilterMethod=1
 ADX_TickFilterMethod=1

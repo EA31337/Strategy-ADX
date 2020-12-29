@@ -17,15 +17,15 @@ INPUT int ADX_TickFilterMethod = 0;          // Tick filter method
 INPUT float ADX_MaxSpread = 6.0;             // Max spread to trade (pips)
 INPUT int ADX_Shift = 0;                     // Shift (relative to the current bar, 0 - default)
 INPUT string __ADX_Indi_ADX_Parameters__ =
-    "-- ADX strategy: ADX indicator params --";                // >>> ADX strategy: ADX indicator <<<
-INPUT int Indi_ADX_Period = 14;                                // Averaging period
-INPUT ENUM_APPLIED_PRICE Indi_ADX_Applied_Price = PRICE_HIGH;  // Applied price.
+    "-- ADX strategy: ADX indicator params --";                    // >>> ADX strategy: ADX indicator <<<
+INPUT int ADX_Indi_ADX_Period = 14;                                // Averaging period
+INPUT ENUM_APPLIED_PRICE ADX_Indi_ADX_Applied_Price = PRICE_HIGH;  // Applied price.
 
 // Structs.
 
 // Defines struct with default user indicator values.
 struct Indi_ADX_Params_Defaults : ADXParams {
-  Indi_ADX_Params_Defaults() : ADXParams(::Indi_ADX_Period, ::Indi_ADX_Applied_Price) {}
+  Indi_ADX_Params_Defaults() : ADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_Applied_Price) {}
 } indi_adx_defaults;
 
 // Defines struct to store indicator parameter values.
