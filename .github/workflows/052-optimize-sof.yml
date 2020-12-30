@@ -5,8 +5,8 @@ name: Optimize SignalOpenFilterMethod
 on:
   push:
     branches:
-      - 'optimize-sofm'
-      - 'optimize-sofm-*'
+      - 'optimize-sof'
+      - 'optimize-sof-*'
 
 jobs:
   Compile:
@@ -109,7 +109,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Update config file
         env:
-          KEY: signal_open_filter_method
+          KEY: signal_open_filter
         run: |
           ex -u NONE -V1 \
             +"%s@\\<$KEY[^=]\\?=\\s\\?[^-.0-9]\\+\\zs[^;$]\\+@${!pname}@" \
