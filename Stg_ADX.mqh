@@ -119,13 +119,16 @@ class Stg_ADX : public Strategy {
    * Gets price stop value for profit take or stop loss.
    */
   float PriceStop(ENUM_ORDER_TYPE _cmd, ENUM_ORDER_TYPE_VALUE _mode, int _method = 0, float _level = 0.0) {
+    Chart *_chart = sparams.GetChart();
     Indi_ADX *_indi = Data();
     bool _is_valid = _indi[CURR].IsValid();
     double _trail = _level * Market().GetPipSize();
     int _bar_count = (int)_level * (int)_indi.GetPeriod();
     int _bar_lowest = _indi.GetLowest<double>(_bar_count), _bar_highest = _indi.GetHighest<double>(_bar_count);
     int _direction = Order::OrderDirection(_cmd, _mode);
+    double _change_pc = Math::ChangeInPct(_indi[PREV][(int)LINE_MAIN_ADX], _indi[CURR][(int)LINE_MAIN_ADX]);
     double _default_value = Market().GetCloseOffer(_cmd) + _trail * _method * _direction;
+    double _price_offer = _chart.GetOpenOffer(_cmd);
     double _result = _default_value;
     ENUM_APPLIED_PRICE _ap = _direction > 0 ? PRICE_HIGH : PRICE_LOW;
     switch (_method) {
@@ -136,7 +139,11 @@ class Stg_ADX : public Strategy {
         _result = _direction > 0 ? fmax(_indi.GetPrice(_ap, _bar_lowest), _indi.GetPrice(_ap, _bar_highest))
                                  : fmin(_indi.GetPrice(_ap, _bar_lowest), _indi.GetPrice(_ap, _bar_highest));
         break;
+      case 3:
+        _result = Math::ChangeByPct(_price_offer, (float)_change_pc / _level);
+        break;
     }
+    _result =+ _trail;
     return (float)_result;
   }
 };
