@@ -72,10 +72,12 @@ class Stg_ADX : public Strategy {
     // Initialize strategy initial values.
     Indi_ADX_Params _indi_params(indi_adx_defaults, _tf);
     StgParams _stg_params(stg_adx_defaults);
-    SetParamsByTf<Indi_ADX_Params>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30, indi_adx_h1,
-                                   indi_adx_h4, indi_adx_h8);
-    SetParamsByTf<StgParams>(_stg_params, _tf, stg_adx_m1, stg_adx_m5, stg_adx_m15, stg_adx_m30, stg_adx_h1, stg_adx_h4,
-                             stg_adx_h8);
+    if (!Terminal::IsOptimization()) {
+      SetParamsByTf<Indi_ADX_Params>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30,
+                                     indi_adx_h1, indi_adx_h4, indi_adx_h8);
+      SetParamsByTf<StgParams>(_stg_params, _tf, stg_adx_m1, stg_adx_m5, stg_adx_m15, stg_adx_m30, stg_adx_h1,
+                               stg_adx_h4, stg_adx_h8);
+    }
     // Initialize indicator.
     ADXParams adx_params(_indi_params);
     _stg_params.SetIndicator(new Indi_ADX(_indi_params));
