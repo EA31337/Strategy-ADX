@@ -77,8 +77,9 @@ jobs:
         run: echo Active_Tfs=${{ steps.tf.outputs.tf }} | tee -a sets/*.set
       - uses: ea31337/mql-tester-action@master
         with:
+          BtDeposit: 100000
           BtDest: ${{ github.workspace }}/_results
-          BtMonths: 1
+          BtMonths: 11-12
           BtPair: ${{ matrix.pair }}
           BtYears: 2019
           OptFormatBrief: true
