@@ -100,7 +100,7 @@ class Stg_ADX : public Strategy {
     bool _is_valid = _indi[CURR].IsValid();
     bool _result = _is_valid;
     if (_is_valid) {
-      double _change_pc = Math::ChangeInPct(_indi[3][(int)LINE_MAIN_ADX], _indi[0][(int)LINE_MAIN_ADX]);
+      double _change_pc = Math::ChangeInPct(_indi[_shift + 2][(int)LINE_MAIN_ADX], _indi[_shift][(int)LINE_MAIN_ADX], true);
       switch (_cmd) {
         // Buy: +DI line is above -DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
         case ORDER_TYPE_BUY:
