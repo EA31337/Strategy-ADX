@@ -99,21 +99,22 @@ class Stg_ADX : public Strategy {
     Indi_ADX *_indi = Data();
     bool _is_valid = _indi[CURR].IsValid();
     bool _result = _is_valid;
-    switch (_cmd) {
-      // Buy: +DI line is above -DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
-      case ORDER_TYPE_BUY:
-        _result &=
-            _indi[CURR][(int)LINE_MINUSDI] < _indi[CURR][(int)LINE_PLUSDI] && _indi[CURR][(int)LINE_MAIN_ADX] >= _level;
-        if (METHOD(_method, 0)) _result &= _indi[CURR][(int)LINE_MAIN_ADX] > _indi[PREV][(int)LINE_MAIN_ADX];
-        if (METHOD(_method, 1)) _result &= _indi[PREV][(int)LINE_MAIN_ADX] > _indi[PPREV][(int)LINE_MAIN_ADX];
-        break;
-      // Sell: -DI line is above +DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
-      case ORDER_TYPE_SELL:
-        _result &=
-            _indi[CURR][(int)LINE_MINUSDI] > _indi[CURR][(int)LINE_PLUSDI] && _indi[CURR][(int)LINE_MAIN_ADX] >= _level;
-        if (METHOD(_method, 0)) _result &= _indi[CURR][(int)LINE_MAIN_ADX] > _indi[PREV][(int)LINE_MAIN_ADX];
-        if (METHOD(_method, 1)) _result &= _indi[PREV][(int)LINE_MAIN_ADX] > _indi[PPREV][(int)LINE_MAIN_ADX];
-        break;
+    if (_is_valid) {
+      double _change_pc = Math::ChangeInPct(_indi[3][(int)LINE_MAIN_ADX], _indi[0][(int)LINE_MAIN_ADX]);
+      switch (_cmd) {
+        // Buy: +DI line is above -DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
+        case ORDER_TYPE_BUY:
+          _result &= _indi[CURR][(int)LINE_MINUSDI] < _indi[CURR][(int)LINE_PLUSDI] && _change_pc > _level;
+          if (METHOD(_method, 0)) _result &= _indi[CURR][(int)LINE_MAIN_ADX] > _indi[PREV][(int)LINE_MAIN_ADX];
+          if (METHOD(_method, 1)) _result &= _indi[PREV][(int)LINE_MAIN_ADX] > _indi[PPREV][(int)LINE_MAIN_ADX];
+          break;
+        // Sell: -DI line is above +DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
+        case ORDER_TYPE_SELL:
+          _result &= _indi[CURR][(int)LINE_MINUSDI] > _indi[CURR][(int)LINE_PLUSDI] && _change_pc < _level;
+          if (METHOD(_method, 0)) _result &= _indi[CURR][(int)LINE_MAIN_ADX] > _indi[PREV][(int)LINE_MAIN_ADX];
+          if (METHOD(_method, 1)) _result &= _indi[PREV][(int)LINE_MAIN_ADX] > _indi[PPREV][(int)LINE_MAIN_ADX];
+          break;
+      }
     }
     return _result;
   }
@@ -146,7 +147,7 @@ class Stg_ADX : public Strategy {
         _result = Math::ChangeByPct(_price_offer, (float)_change_pc / _level);
         break;
     }
-    _result =+ _trail;
+    _result = +_trail;
     return (float)_result;
   }
 };
