@@ -6,7 +6,7 @@
 // Defines indicator's parameter values for the given pair symbol and timeframe.
 struct Indi_ADX_Params_M15 : Indi_ADX_Params {
   Indi_ADX_Params_M15() : Indi_ADX_Params(indi_adx_defaults, PERIOD_M15) {
-    period = 24;
+    period = 16;
     applied_price = (ENUM_APPLIED_PRICE)0;
     shift = 0;
   }
