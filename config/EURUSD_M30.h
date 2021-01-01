@@ -7,7 +7,7 @@
 struct Indi_ADX_Params_M30 : Indi_ADX_Params {
   Indi_ADX_Params_M30() : Indi_ADX_Params(indi_adx_defaults, PERIOD_M30) {
     period = 24;
-    applied_price = (ENUM_APPLIED_PRICE)0;
+    applied_price = (ENUM_APPLIED_PRICE)3;
     shift = 0;
   }
 } indi_adx_m30;
