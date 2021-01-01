@@ -19,7 +19,7 @@ struct Stg_ADX_Params_M30 : StgParams {
     lot_size = 0;
     signal_open_method = -1;
     signal_open_filter = 1;
-    signal_open_level = 0;
+    signal_open_level = 40;
     signal_open_boost = 0;
     signal_close_method = 0;
     signal_close_level = 0;
