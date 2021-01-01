@@ -21,8 +21,8 @@ struct Stg_ADX_Params_H4 : StgParams {
     signal_open_filter = 1;
     signal_open_level = 0;
     signal_open_boost = 0;
-    signal_close_method = 0;
-    signal_close_level = 0;
+    signal_close_method = -3;
+    signal_close_level = 25;
     price_stop_method = 0;
     price_stop_level = 2;
     tick_filter_method = 1;
