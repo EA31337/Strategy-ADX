@@ -22,7 +22,7 @@ struct Stg_ADX_Params_M5 : StgParams {
     signal_open_level = 90;
     signal_open_boost = 0;
     signal_close_method = 0;
-    signal_close_level = 0;
+    signal_close_level = 25;
     price_stop_method = 0;
     price_stop_level = 2;
     tick_filter_method = 1;
