@@ -198,7 +198,7 @@ jobs:
           git config --local core.autocrlf false
           git config --local user.email $GIT_EMAIL
           git config --local user.name $GIT_NAME
-          git add . && git add --renormalize .
+          git add config/*.h && git add --renormalize config/*.h
           git pull origin ${{ github.ref }} --autostash --rebase -X ours
           git commit --allow-empty -am "$COMMIT_MSG"
           NO_PAGER=1 git --no-pager diff HEAD^
@@ -210,6 +210,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           branch: dev-optimize-${{ env.PF }}pf-${{ env.DD }}dd-${{ env.TT }}tt
+          force: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Re-pull on failure
         if: ${{ failure() }}
