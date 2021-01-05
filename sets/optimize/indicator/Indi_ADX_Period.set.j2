@@ -9,5 +9,5 @@ ADX_Indi_ADX_Shift={{ shift | default(0) }}
 ADX_LotSize={{ lot_size | default(0) }}
 ADX_PriceStopMethod=0
 ADX_SignalOpenFilterMethod=1
-ADX_SignalOpenLevel={{ signal_open_level | default(0) }}
+ADX_SignalOpenLevel={{ signal_open_level | replace("(float)", "") | float | default(0) }}
 ADX_TickFilterMethod=1
