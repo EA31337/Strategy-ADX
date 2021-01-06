@@ -1,6 +1,6 @@
 ADX_Indi_ADX_Applied_Price={{ applied_price | replace("(ENUM_APPLIED_PRICE)", "") | int | default(0) }}
 ADX_Indi_ADX_MA_Method={{ ma_method | default(0) }}
-ADX_Indi_ADX_Period={{ period | default(4) }}
+ADX_Indi_ADX_Period={{ (period | default(0) | int) }}
 ADX_Indi_ADX_Shift={{ shift | default(0) }}
 ADX_LotSize={{ lot_size | default(0) }}
 ADX_PriceStopLevel,1=10
