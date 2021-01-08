@@ -23,7 +23,7 @@ struct Stg_ADX_Params_{{ Timeframe }} : StgParams {
     signal_close_method = {{ ADX_SignalCloseMethod | default(0) }};
     signal_close_level = (float){{ ADX_SignalCloseLevel | default(0) }};
     price_stop_method = {{ ADX_PriceStopMethod | default(0) }};
-    price_stop_level = {{ ADX_SignalCloseLevel | default(1) }};
+    price_stop_level = (float){{ ADX_SignalCloseLevel | default(1) }};
     tick_filter_method = {{ ADX_TickFilterMethod  | default(1) }};
     max_spread = {{ ADX_MaxSpread | default(0) }};
   }

@@ -24,7 +24,7 @@ struct Stg_ADX_Params_H8 : StgParams {
     signal_close_method = -3;
     signal_close_level = (float)25;
     price_stop_method = 0;
-    price_stop_level = 2;
+    price_stop_level = (float)2;
     tick_filter_method = 1;
     max_spread = 0;
   }
