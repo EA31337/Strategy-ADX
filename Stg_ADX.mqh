@@ -68,8 +68,8 @@ class Stg_ADX : public Strategy {
     ADXParams _indi_params(indi_adx_defaults, _tf);
     StgParams _stg_params(stg_adx_defaults);
     if (!Terminal::IsOptimization()) {
-      SetParamsByTf<ADXParams>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30,
-                                     indi_adx_h1, indi_adx_h4, indi_adx_h8);
+      SetParamsByTf<ADXParams>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30, indi_adx_h1,
+                               indi_adx_h4, indi_adx_h8);
       SetParamsByTf<StgParams>(_stg_params, _tf, stg_adx_m1, stg_adx_m5, stg_adx_m15, stg_adx_m30, stg_adx_h1,
                                stg_adx_h4, stg_adx_h8);
     }
