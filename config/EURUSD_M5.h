@@ -4,8 +4,8 @@
  */
 
 // Defines indicator's parameter values for the given pair symbol and timeframe.
-struct Indi_ADX_Params_M5 : Indi_ADX_Params {
-  Indi_ADX_Params_M5() : Indi_ADX_Params(indi_adx_defaults, PERIOD_M5) {
+struct Indi_ADX_Params_M5 : ADXParams {
+  Indi_ADX_Params_M5() : ADXParams(indi_adx_defaults, PERIOD_M5) {
     applied_price = (ENUM_APPLIED_PRICE)2;
     period = 16;
     shift = 0;

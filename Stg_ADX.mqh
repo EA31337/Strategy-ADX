@@ -29,12 +29,6 @@ struct Indi_ADX_Params_Defaults : ADXParams {
   Indi_ADX_Params_Defaults() : ADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_Applied_Price) {}
 } indi_adx_defaults;
 
-// Defines struct to store indicator parameter values.
-struct Indi_ADX_Params : public ADXParams {
-  // Struct constructors.
-  void Indi_ADX_Params(ADXParams &_params, ENUM_TIMEFRAMES _tf) : ADXParams(_params, _tf) {}
-};
-
 // Defines struct with default user strategy values.
 struct Stg_ADX_Params_Defaults : StgParams {
   Stg_ADX_Params_Defaults()
@@ -45,11 +39,11 @@ struct Stg_ADX_Params_Defaults : StgParams {
 
 // Struct to define strategy parameters to override.
 struct Stg_ADX_Params : StgParams {
-  Indi_ADX_Params iparams;
+  ADXParams iparams;
   StgParams sparams;
 
   // Struct constructors.
-  Stg_ADX_Params(Indi_ADX_Params &_iparams, StgParams &_sparams)
+  Stg_ADX_Params(ADXParams &_iparams, StgParams &_sparams)
       : iparams(indi_adx_defaults, _iparams.tf), sparams(stg_adx_defaults) {
     iparams = _iparams;
     sparams = _sparams;
@@ -71,10 +65,10 @@ class Stg_ADX : public Strategy {
 
   static Stg_ADX *Init(ENUM_TIMEFRAMES _tf = NULL, long _magic_no = NULL, ENUM_LOG_LEVEL _log_level = V_INFO) {
     // Initialize strategy initial values.
-    Indi_ADX_Params _indi_params(indi_adx_defaults, _tf);
+    ADXParams _indi_params(indi_adx_defaults, _tf);
     StgParams _stg_params(stg_adx_defaults);
     if (!Terminal::IsOptimization()) {
-      SetParamsByTf<Indi_ADX_Params>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30,
+      SetParamsByTf<ADXParams>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30,
                                      indi_adx_h1, indi_adx_h4, indi_adx_h8);
       SetParamsByTf<StgParams>(_stg_params, _tf, stg_adx_m1, stg_adx_m5, stg_adx_m15, stg_adx_m30, stg_adx_h1,
                                stg_adx_h4, stg_adx_h8);
