@@ -1,0 +1,7 @@
+; Optimize indicator's shift param.
+ADX_Indi_ADX_Shift,1=0
+ADX_Indi_ADX_Shift,2=1
+ADX_Indi_ADX_Shift,3=4
+ADX_Indi_ADX_Shift,F=1
+ADX_SignalOpenFilterMethod=1
+ADX_TickFilterMethod=1
