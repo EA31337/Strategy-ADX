@@ -7,7 +7,7 @@
 struct Indi_ADX_Params_{{ Timeframe }} : ADXParams {
   Indi_ADX_Params_{{ Timeframe }}() : ADXParams(indi_adx_defaults, PERIOD_{{ Timeframe }}) {
     period = {{ ADX_Indi_ADX_Period | default(0) }};
-    shift = {{ ADX_Shift | default(0) }};
+    shift = {{ ADX_Indi_ADX_Shift | default(0) }};
   }
 } indi_adx_{{ Timeframe | lower }};
 
