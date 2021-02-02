@@ -4,19 +4,20 @@
  */
 
 // User input params.
-INPUT float ADX_LotSize = 0;               // Lot size
-INPUT int ADX_SignalOpenMethod = 0;        // Signal open method
-INPUT float ADX_SignalOpenLevel = 0.0f;    // Signal open level (>0.0001)
-INPUT int ADX_SignalOpenFilterMethod = 1;  // Signal open filter method
-INPUT int ADX_SignalOpenBoostMethod = 0;   // Signal open boost method
-INPUT int ADX_SignalCloseMethod = 0;       // Signal close method
-INPUT float ADX_SignalCloseLevel = 0.0f;   // Signal close level (>0.0001)
-INPUT int ADX_PriceStopMethod = 0;         // Price stop method
-INPUT float ADX_PriceStopLevel = 2;        // Price stop level
-INPUT int ADX_TickFilterMethod = 1;        // Tick filter method
-INPUT float ADX_MaxSpread = 4.0;           // Max spread to trade (pips)
-INPUT int ADX_Shift = 0;                   // Shift (relative to the current bar, 0 - default)
-INPUT int ADX_OrderCloseTime = -20;        // Order close time in mins (>0) or bars (<0)
+INPUT string __ADX_Parameters__ = "-- ADX strategy params --";  // >>> ADX <<<
+INPUT float ADX_LotSize = 0;                                    // Lot size
+INPUT int ADX_SignalOpenMethod = 0;                             // Signal open method
+INPUT float ADX_SignalOpenLevel = 0.0f;                         // Signal open level (>0.0001)
+INPUT int ADX_SignalOpenFilterMethod = 1;                       // Signal open filter method
+INPUT int ADX_SignalOpenBoostMethod = 0;                        // Signal open boost method
+INPUT int ADX_SignalCloseMethod = 0;                            // Signal close method
+INPUT float ADX_SignalCloseLevel = 0.0f;                        // Signal close level (>0.0001)
+INPUT int ADX_PriceStopMethod = 0;                              // Price stop method
+INPUT float ADX_PriceStopLevel = 2;                             // Price stop level
+INPUT int ADX_TickFilterMethod = 1;                             // Tick filter method
+INPUT float ADX_MaxSpread = 4.0;                                // Max spread to trade (pips)
+INPUT int ADX_Shift = 0;                                        // Shift (relative to the current bar, 0 - default)
+INPUT int ADX_OrderCloseTime = -20;                             // Order close time in mins (>0) or bars (<0)
 INPUT string __ADX_Indi_ADX_Parameters__ =
     "-- ADX strategy: ADX indicator params --";                    // >>> ADX strategy: ADX indicator <<<
 INPUT int ADX_Indi_ADX_Period = 14;                                // Averaging period
@@ -67,12 +68,12 @@ class Stg_ADX : public Strategy {
     // Initialize strategy initial values.
     ADXParams _indi_params(indi_adx_defaults, _tf);
     StgParams _stg_params(stg_adx_defaults);
-    if (!Terminal::IsOptimization()) {
-      SetParamsByTf<ADXParams>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30, indi_adx_h1,
-                               indi_adx_h4, indi_adx_h8);
-      SetParamsByTf<StgParams>(_stg_params, _tf, stg_adx_m1, stg_adx_m5, stg_adx_m15, stg_adx_m30, stg_adx_h1,
-                               stg_adx_h4, stg_adx_h8);
-    }
+#ifdef __config__
+    SetParamsByTf<ADXParams>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30, indi_adx_h1,
+                             indi_adx_h4, indi_adx_h8);
+    SetParamsByTf<StgParams>(_stg_params, _tf, stg_adx_m1, stg_adx_m5, stg_adx_m15, stg_adx_m30, stg_adx_h1, stg_adx_h4,
+                             stg_adx_h8);
+#endif
     // Initialize indicator.
     ADXParams adx_params(_indi_params);
     _stg_params.SetIndicator(new Indi_ADX(_indi_params));
@@ -82,7 +83,6 @@ class Stg_ADX : public Strategy {
     _stg_params.SetTf(_tf, _Symbol);
     // Initialize strategy instance.
     Strategy *_strat = new Stg_ADX(_stg_params, "ADX");
-    _stg_params.SetStops(_strat, _strat);
     return _strat;
   }
 
