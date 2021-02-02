@@ -6,8 +6,7 @@
 // Defines indicator's parameter values for the given pair symbol and timeframe.
 struct Indi_ADX_Params_M30 : ADXParams {
   Indi_ADX_Params_M30() : ADXParams(indi_adx_defaults, PERIOD_M30) {
-    applied_price = (ENUM_APPLIED_PRICE)3;
-    period = 24;
+    period = 28;
     shift = 0;
   }
 } indi_adx_m30;
@@ -19,7 +18,7 @@ struct Stg_ADX_Params_M30 : StgParams {
     lot_size = 0;
     signal_open_method = 0;
     signal_open_filter = 1;
-    signal_open_level = (float)40;
+    signal_open_level = (float)40.0;
     signal_open_boost = 0;
     signal_close_method = 0;
     signal_close_level = (float)0;
