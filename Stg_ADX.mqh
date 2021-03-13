@@ -22,12 +22,13 @@ INPUT string __ADX_Indi_ADX_Parameters__ =
     "-- ADX strategy: ADX indicator params --";                    // >>> ADX strategy: ADX indicator <<<
 INPUT int ADX_Indi_ADX_Period = 14;                                // Averaging period
 INPUT ENUM_APPLIED_PRICE ADX_Indi_ADX_Applied_Price = PRICE_HIGH;  // Applied price.
+INPUT int ADX_Indi_ADX_Shift = 0;                                  // Shift
 
 // Structs.
 
 // Defines struct with default user indicator values.
 struct Indi_ADX_Params_Defaults : ADXParams {
-  Indi_ADX_Params_Defaults() : ADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_Applied_Price) {}
+  Indi_ADX_Params_Defaults() : ADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_Applied_Price, ::ADX_Indi_ADX_Shift) {}
 } indi_adx_defaults;
 
 // Defines struct with default user strategy values.
