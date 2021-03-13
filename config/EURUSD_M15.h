@@ -7,7 +7,7 @@
 struct Indi_ADX_Params_M15 : ADXParams {
   Indi_ADX_Params_M15() : ADXParams(indi_adx_defaults, PERIOD_M15) {
     applied_price = (ENUM_APPLIED_PRICE)2;
-    period = 16;
+    period = 8;
     shift = 0;
   }
 } indi_adx_m15;
