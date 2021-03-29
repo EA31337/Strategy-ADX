@@ -16,7 +16,7 @@ INPUT int ADX_PriceStopMethod = 0;                              // Price stop me
 INPUT float ADX_PriceStopLevel = 2;                             // Price stop level
 INPUT int ADX_TickFilterMethod = 1;                             // Tick filter method
 INPUT float ADX_MaxSpread = 4.0;                                // Max spread to trade (pips)
-INPUT int ADX_Shift = 0;                                        // Shift (relative to the current bar, 0 - default)
+INPUT short ADX_Shift = 0;                                      // Shift (relative to the current bar, 0 - default)
 INPUT int ADX_OrderCloseTime = -20;                             // Order close time in mins (>0) or bars (<0)
 INPUT string __ADX_Indi_ADX_Parameters__ =
     "-- ADX strategy: ADX indicator params --";                    // >>> ADX strategy: ADX indicator <<<
