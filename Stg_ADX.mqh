@@ -91,7 +91,7 @@ class Stg_ADX : public Strategy {
    * Check strategy's opening signal.
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, float _level = 0.0f, int _shift = 0) {
-    Indi_ADX *_indi = Data();
+    Indi_ADX *_indi = GetIndicator();
     bool _is_valid = _indi[CURR].IsValid();
     bool _result = _is_valid;
     if (_is_valid) {
@@ -126,7 +126,7 @@ class Stg_ADX : public Strategy {
    */
   float PriceStop(ENUM_ORDER_TYPE _cmd, ENUM_ORDER_TYPE_VALUE _mode, int _method = 0, float _level = 0.0) {
     Chart *_chart = sparams.GetChart();
-    Indi_ADX *_indi = Data();
+    Indi_ADX *_indi = GetIndicator();
     bool _is_valid = _indi[CURR].IsValid();
     double _trail = _level * Market().GetPipSize();
     int _bar_count = (int)_level * (int)_indi.GetPeriod();
