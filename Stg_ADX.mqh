@@ -46,7 +46,7 @@ struct Stg_ADX_Params : StgParams {
 
   // Struct constructors.
   Stg_ADX_Params(ADXParams &_iparams, StgParams &_sparams)
-      : iparams(indi_adx_defaults, _iparams.tf), sparams(stg_adx_defaults) {
+      : iparams(indi_adx_defaults, _iparams.tf.GetTf()), sparams(stg_adx_defaults) {
     iparams = _iparams;
     sparams = _sparams;
   }
