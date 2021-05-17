@@ -18,14 +18,14 @@ struct Stg_ADX_Params_M5 : StgParams {
   Stg_ADX_Params_M5() : StgParams(stg_adx_defaults) {
     lot_size = 0;
     signal_open_method = 0;
-    signal_open_filter = 1;
+    signal_open_filter = 32;
     signal_open_level = (float)90;
     signal_open_boost = 0;
     signal_close_method = 0;
     signal_close_level = (float)0;
     price_stop_method = 0;
     price_stop_level = (float)1;
-    tick_filter_method = 1;
+    tick_filter_method = 32;
     max_spread = 0;
   }
 } stg_adx_m5;
