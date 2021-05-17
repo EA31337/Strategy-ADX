@@ -6,15 +6,15 @@
 // User input params.
 INPUT string __ADX_Parameters__ = "-- ADX strategy params --";  // >>> ADX <<<
 INPUT float ADX_LotSize = 0;                                    // Lot size
-INPUT int ADX_SignalOpenMethod = 0;                             // Signal open method
-INPUT float ADX_SignalOpenLevel = 0.0f;                         // Signal open level (>0.0001)
-INPUT int ADX_SignalOpenFilterMethod = 1;                       // Signal open filter method
+INPUT int ADX_SignalOpenMethod = 0;                             // Signal open method (-127-127)
+INPUT float ADX_SignalOpenLevel = 0.0f;                         // Signal open level
+INPUT int ADX_SignalOpenFilterMethod = 32;                      // Signal open filter method
 INPUT int ADX_SignalOpenBoostMethod = 0;                        // Signal open boost method
 INPUT int ADX_SignalCloseMethod = 0;                            // Signal close method
 INPUT float ADX_SignalCloseLevel = 0.0f;                        // Signal close level (>0.0001)
 INPUT int ADX_PriceStopMethod = 0;                              // Price stop method
 INPUT float ADX_PriceStopLevel = 2;                             // Price stop level
-INPUT int ADX_TickFilterMethod = 1;                             // Tick filter method
+INPUT int ADX_TickFilterMethod = 32;                            // Tick filter method
 INPUT float ADX_MaxSpread = 4.0;                                // Max spread to trade (pips)
 INPUT short ADX_Shift = 0;                                      // Shift (relative to the current bar, 0 - default)
 INPUT int ADX_OrderCloseTime = -20;                             // Order close time in mins (>0) or bars (<0)
@@ -94,26 +94,19 @@ class Stg_ADX : public Strategy {
     bool _is_valid = _indi[CURR].IsValid();
     bool _result = _is_valid;
     if (_is_valid) {
-      double _change_pc =
-          Math::ChangeInPct(_indi[_shift + 2][(int)LINE_MAIN_ADX], _indi[_shift][(int)LINE_MAIN_ADX], true);
+      IndicatorSignal _signals = _indi.GetSignals(4, _shift, LINE_MINUSDI, LINE_PLUSDI);
       switch (_cmd) {
         // Buy: +DI line is above -DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
         case ORDER_TYPE_BUY:
           _result &= _indi[CURR][(int)LINE_MINUSDI] < _indi[CURR][(int)LINE_PLUSDI];
-          _result &= _change_pc > _level;
-          if (_result && _method != 0) {
-            if (METHOD(_method, 0)) _result &= _indi[CURR][(int)LINE_MAIN_ADX] > _indi[PREV][(int)LINE_MAIN_ADX];
-            if (METHOD(_method, 1)) _result &= _indi[PREV][(int)LINE_MAIN_ADX] > _indi[PPREV][(int)LINE_MAIN_ADX];
-          }
+          _result &= _indi.IsIncByPct(_level, 0, 0, 3);
+          _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
           break;
         // Sell: -DI line is above +DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
         case ORDER_TYPE_SELL:
           _result &= _indi[CURR][(int)LINE_MINUSDI] > _indi[CURR][(int)LINE_PLUSDI];
-          _result &= _change_pc < -_level;
-          if (_result && _method != 0) {
-            if (METHOD(_method, 0)) _result &= _indi[CURR][(int)LINE_MAIN_ADX] > _indi[PREV][(int)LINE_MAIN_ADX];
-            if (METHOD(_method, 1)) _result &= _indi[PREV][(int)LINE_MAIN_ADX] > _indi[PPREV][(int)LINE_MAIN_ADX];
-          }
+          _result &= _indi.IsDecByPct(-_level, 0, 0, 3);
+          _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
           break;
       }
     }

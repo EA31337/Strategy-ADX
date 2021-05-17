@@ -17,11 +17,11 @@ struct Stg_ADX_Params_M30 : StgParams {
   // Struct constructor.
   Stg_ADX_Params_M30() : StgParams(stg_adx_defaults) {
     lot_size = 0;
-    signal_open_method = 0;
+    signal_open_method = 32;
     signal_open_filter = 32;
-    signal_open_level = (float)40;
+    signal_open_level = (float)0;
     signal_open_boost = 0;
-    signal_close_method = 0;
+    signal_close_method = 32;
     signal_close_level = (float)0;
     price_stop_method = 0;
     price_stop_level = (float)1;
