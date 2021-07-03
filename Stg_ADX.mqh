@@ -6,13 +6,13 @@
 // User input params.
 INPUT string __ADX_Parameters__ = "-- ADX strategy params --";  // >>> ADX <<<
 INPUT float ADX_LotSize = 0;                                    // Lot size
-INPUT int ADX_SignalOpenMethod = 0;                             // Signal open method (-127-127)
+INPUT int ADX_SignalOpenMethod = -34;                           // Signal open method (-127-127)
 INPUT float ADX_SignalOpenLevel = 0.0f;                         // Signal open level
 INPUT int ADX_SignalOpenFilterMethod = 32;                      // Signal open filter method
 INPUT int ADX_SignalOpenBoostMethod = 0;                        // Signal open boost method
-INPUT int ADX_SignalCloseMethod = 0;                            // Signal close method
+INPUT int ADX_SignalCloseMethod = 4;                            // Signal close method (-127-127)
 INPUT float ADX_SignalCloseLevel = 0.0f;                        // Signal close level (>0.0001)
-INPUT int ADX_PriceStopMethod = 0;                              // Price stop method
+INPUT int ADX_PriceStopMethod = 1;                              // Price stop method
 INPUT float ADX_PriceStopLevel = 2;                             // Price stop level
 INPUT int ADX_TickFilterMethod = 32;                            // Tick filter method
 INPUT float ADX_MaxSpread = 4.0;                                // Max spread to trade (pips)
@@ -111,37 +111,5 @@ class Stg_ADX : public Strategy {
       }
     }
     return _result;
-  }
-
-  /**
-   * Gets price stop value for profit take or stop loss.
-   */
-  float PriceStop(ENUM_ORDER_TYPE _cmd, ENUM_ORDER_TYPE_VALUE _mode, int _method = 0, float _level = 0.0) {
-    Chart *_chart = trade.GetChart();
-    Indi_ADX *_indi = GetIndicator();
-    bool _is_valid = _indi[CURR].IsValid();
-    double _trail = _level * Market().GetPipSize();
-    int _bar_count = (int)_level * (int)_indi.GetPeriod();
-    int _bar_lowest = _indi.GetLowest<double>(_bar_count), _bar_highest = _indi.GetHighest<double>(_bar_count);
-    int _direction = Order::OrderDirection(_cmd, _mode);
-    double _change_pc = Math::ChangeInPct(_indi[PREV][(int)LINE_MAIN_ADX], _indi[CURR][(int)LINE_MAIN_ADX]);
-    double _default_value = Market().GetCloseOffer(_cmd) + _trail * _method * _direction;
-    double _price_offer = _chart.GetOpenOffer(_cmd);
-    double _result = _default_value;
-    ENUM_APPLIED_PRICE _ap = _direction > 0 ? PRICE_HIGH : PRICE_LOW;
-    switch (_method) {
-      case 1:
-        _result = _direction > 0 ? _indi.GetPrice(_ap, _bar_highest) : _indi.GetPrice(_ap, _bar_lowest);
-        break;
-      case 2:
-        _result = _direction > 0 ? fmax(_indi.GetPrice(_ap, _bar_lowest), _indi.GetPrice(_ap, _bar_highest))
-                                 : fmin(_indi.GetPrice(_ap, _bar_lowest), _indi.GetPrice(_ap, _bar_highest));
-        break;
-      case 3:
-        _result = Math::ChangeByPct(_price_offer, (float)_change_pc / _level);
-        break;
-    }
-    _result = +_trail;
-    return (float)_result;
   }
 };
