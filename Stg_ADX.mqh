@@ -18,6 +18,8 @@ INPUT float ADX_PriceStopLevel = 2;         // Price stop level
 INPUT int ADX_TickFilterMethod = 32;        // Tick filter method
 INPUT float ADX_MaxSpread = 4.0;            // Max spread to trade (pips)
 INPUT short ADX_Shift = 0;                  // Shift (relative to the current bar, 0 - default)
+INPUT float ADX_OrderCloseLoss = 0;         // Order close loss
+INPUT float ADX_OrderCloseProfit = 0;       // Order close profit
 INPUT int ADX_OrderCloseTime = -20;         // Order close time in mins (>0) or bars (<0)
 INPUT_GROUP("ADX strategy: ADX indicator params");
 INPUT int ADX_Indi_ADX_Period = 14;                                // Averaging period
@@ -36,8 +38,11 @@ struct Stg_ADX_Params_Defaults : StgParams {
   Stg_ADX_Params_Defaults()
       : StgParams(::ADX_SignalOpenMethod, ::ADX_SignalOpenFilterMethod, ::ADX_SignalOpenLevel,
                   ::ADX_SignalOpenBoostMethod, ::ADX_SignalCloseMethod, ::ADX_SignalCloseFilter, ::ADX_SignalCloseLevel,
-                  ::ADX_PriceStopMethod, ::ADX_PriceStopLevel, ::ADX_TickFilterMethod, ::ADX_MaxSpread, ::ADX_Shift,
-                  ::ADX_OrderCloseTime) {}
+                  ::ADX_PriceStopMethod, ::ADX_PriceStopLevel, ::ADX_TickFilterMethod, ::ADX_MaxSpread, ::ADX_Shift) {
+    Set(STRAT_PARAM_OCL, ADX_OrderCloseLoss);
+    Set(STRAT_PARAM_OCP, ADX_OrderCloseProfit);
+    Set(STRAT_PARAM_OCT, ADX_OrderCloseTime);
+  }
 } stg_adx_defaults;
 
 // Struct to define strategy parameters to override.
