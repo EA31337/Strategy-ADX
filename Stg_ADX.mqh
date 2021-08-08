@@ -11,6 +11,7 @@ INPUT float ADX_SignalOpenLevel = 0.0f;     // Signal open level
 INPUT int ADX_SignalOpenFilterMethod = 32;  // Signal open filter method
 INPUT int ADX_SignalOpenBoostMethod = 0;    // Signal open boost method
 INPUT int ADX_SignalCloseMethod = 4;        // Signal close method (-127-127)
+INPUT int ADX_SignalCloseFilter = 0;        // Signal close filter (-127-127)
 INPUT float ADX_SignalCloseLevel = 0.0f;    // Signal close level (>0.0001)
 INPUT int ADX_PriceStopMethod = 1;          // Price stop method
 INPUT float ADX_PriceStopLevel = 2;         // Price stop level
@@ -34,8 +35,9 @@ struct Indi_ADX_Params_Defaults : ADXParams {
 struct Stg_ADX_Params_Defaults : StgParams {
   Stg_ADX_Params_Defaults()
       : StgParams(::ADX_SignalOpenMethod, ::ADX_SignalOpenFilterMethod, ::ADX_SignalOpenLevel,
-                  ::ADX_SignalOpenBoostMethod, ::ADX_SignalCloseMethod, ::ADX_SignalCloseLevel, ::ADX_PriceStopMethod,
-                  ::ADX_PriceStopLevel, ::ADX_TickFilterMethod, ::ADX_MaxSpread, ::ADX_Shift, ::ADX_OrderCloseTime) {}
+                  ::ADX_SignalOpenBoostMethod, ::ADX_SignalCloseMethod, ::ADX_SignalCloseFilter, ::ADX_SignalCloseLevel,
+                  ::ADX_PriceStopMethod, ::ADX_PriceStopLevel, ::ADX_TickFilterMethod, ::ADX_MaxSpread, ::ADX_Shift,
+                  ::ADX_OrderCloseTime) {}
 } stg_adx_defaults;
 
 // Struct to define strategy parameters to override.
