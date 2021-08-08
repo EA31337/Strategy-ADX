@@ -91,24 +91,25 @@ class Stg_ADX : public Strategy {
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, float _level = 0.0f, int _shift = 0) {
     Indi_ADX *_indi = GetIndicator();
-    bool _is_valid = _indi[CURR].IsValid();
-    bool _result = _is_valid;
-    if (_is_valid) {
-      IndicatorSignal _signals = _indi.GetSignals(4, _shift, LINE_MINUSDI, LINE_PLUSDI);
-      switch (_cmd) {
-        // Buy: +DI line is above -DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
-        case ORDER_TYPE_BUY:
-          _result &= _indi[CURR][(int)LINE_MINUSDI] < _indi[CURR][(int)LINE_PLUSDI];
-          _result &= _indi.IsIncByPct(_level, 0, 0, 3);
-          _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
-          break;
-        // Sell: -DI line is above +DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
-        case ORDER_TYPE_SELL:
-          _result &= _indi[CURR][(int)LINE_MINUSDI] > _indi[CURR][(int)LINE_PLUSDI];
-          _result &= _indi.IsDecByPct(-_level, 0, 0, 3);
-          _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
-          break;
-      }
+    bool _result = _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID);
+    if (!_result) {
+      // Returns false when indicator data is not valid.
+      return false;
+    }
+    IndicatorSignal _signals = _indi.GetSignals(4, _shift, LINE_MINUSDI, LINE_PLUSDI);
+    switch (_cmd) {
+      // Buy: +DI line is above -DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
+      case ORDER_TYPE_BUY:
+        _result &= _indi[CURR][(int)LINE_MINUSDI] < _indi[CURR][(int)LINE_PLUSDI];
+        _result &= _indi.IsIncByPct(_level, 0, 0, 3);
+        _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
+        break;
+      // Sell: -DI line is above +DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
+      case ORDER_TYPE_SELL:
+        _result &= _indi[CURR][(int)LINE_MINUSDI] > _indi[CURR][(int)LINE_PLUSDI];
+        _result &= _indi.IsDecByPct(-_level, 0, 0, 3);
+        _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
+        break;
     }
     return _result;
   }
