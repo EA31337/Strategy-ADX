@@ -18,7 +18,6 @@ struct Stg_ADX_Params_H8 : StgParams {
   Stg_ADX_Params_H8() : StgParams(stg_adx_defaults) {
     lot_size = 0;
     signal_open_method = -34;
-    signal_open_filter = 32;
     signal_open_level = (float)0;
     signal_open_boost = 0;
     signal_close_method = 4;

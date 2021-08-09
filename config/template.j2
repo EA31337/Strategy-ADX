@@ -17,7 +17,7 @@ struct Stg_ADX_Params_{{ Timeframe }} : StgParams {
   Stg_ADX_Params_{{ Timeframe }}() : StgParams(stg_adx_defaults) {
     lot_size = {{ ADX_LotSize | default(0) }};
     signal_open_method = {{ ADX_SignalOpenMethod | default(0) }};
-    signal_open_filter = {{ ADX_SignalOpenFilterMethod | default(1) }};
+    signal_open_filter_method = {{ ADX_SignalOpenFilterMethod | default(1) }};
     signal_open_level = (float){{ ADX_SignalOpenLevel | default(0) }};
     signal_open_boost = {{ ADX_SignalOpenBoostMethod | default(0) }};
     signal_close_method = {{ ADX_SignalCloseMethod | default(0) }};
