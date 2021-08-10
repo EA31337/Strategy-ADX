@@ -6,15 +6,15 @@
 // User input params.
 INPUT_GROUP("ADX strategy: strategy params");
 INPUT float ADX_LotSize = 0;                // Lot size
-INPUT int ADX_SignalOpenMethod = -34;       // Signal open method (-127-127)
-INPUT float ADX_SignalOpenLevel = 0.0f;     // Signal open level
+INPUT int ADX_SignalOpenMethod = 16;        // Signal open method (-127-127)
+INPUT float ADX_SignalOpenLevel = 3.0f;     // Signal open level
 INPUT int ADX_SignalOpenFilterMethod = 32;  // Signal open filter method
 INPUT int ADX_SignalOpenFilterTime = 6;     // Signal open filter time
 INPUT int ADX_SignalOpenBoostMethod = 0;    // Signal open boost method
 INPUT int ADX_SignalCloseMethod = 4;        // Signal close method (-127-127)
 INPUT int ADX_SignalCloseFilter = 0;        // Signal close filter (-127-127)
 INPUT float ADX_SignalCloseLevel = 0.0f;    // Signal close level (>0.0001)
-INPUT int ADX_PriceStopMethod = 1;          // Price stop method
+INPUT int ADX_PriceStopMethod = 3;          // Price stop method (0-127)
 INPUT float ADX_PriceStopLevel = 2;         // Price stop level
 INPUT int ADX_TickFilterMethod = 32;        // Tick filter method
 INPUT float ADX_MaxSpread = 4.0;            // Max spread to trade (pips)
