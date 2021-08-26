@@ -101,7 +101,7 @@ class Stg_ADX : public Strategy {
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, float _level = 0.0f, int _shift = 0) {
     Indi_ADX *_indi = GetIndicator();
-    bool _result = _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID);
+    bool _result = _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift);
     if (!_result) {
       // Returns false when indicator data is not valid.
       return false;
