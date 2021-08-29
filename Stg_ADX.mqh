@@ -76,7 +76,7 @@ class Stg_ADX : public Strategy {
   Stg_ADX(StgParams &_sparams, TradeParams &_tparams, ChartParams &_cparams, string _name = "")
       : Strategy(_sparams, _tparams, _cparams, _name) {}
 
-  static Stg_ADX *Init(ENUM_TIMEFRAMES _tf = NULL, long _magic_no = NULL, ENUM_LOG_LEVEL _log_level = V_INFO) {
+  static Stg_ADX *Init(ENUM_TIMEFRAMES _tf = NULL) {
     // Initialize strategy initial values.
     ADXParams _indi_params(indi_adx_defaults, _tf);
     StgParams _stg_params(stg_adx_defaults);
@@ -91,7 +91,7 @@ class Stg_ADX : public Strategy {
     _stg_params.SetIndicator(new Indi_ADX(_indi_params));
     // Initialize Strategy instance.
     ChartParams _cparams(_tf, _Symbol);
-    TradeParams _tparams(_magic_no, _log_level);
+    TradeParams _tparams;
     Strategy *_strat = new Stg_ADX(_stg_params, _tparams, _cparams, "ADX");
     return _strat;
   }
