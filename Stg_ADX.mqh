@@ -40,6 +40,7 @@ struct Stg_ADX_Params_Defaults : StgParams {
       : StgParams(::ADX_SignalOpenMethod, ::ADX_SignalOpenFilterMethod, ::ADX_SignalOpenLevel,
                   ::ADX_SignalOpenBoostMethod, ::ADX_SignalCloseMethod, ::ADX_SignalCloseFilter, ::ADX_SignalCloseLevel,
                   ::ADX_PriceStopMethod, ::ADX_PriceStopLevel, ::ADX_TickFilterMethod, ::ADX_MaxSpread, ::ADX_Shift) {
+    Set(STRAT_PARAM_LS, ADX_LotSize);
     Set(STRAT_PARAM_OCL, ADX_OrderCloseLoss);
     Set(STRAT_PARAM_OCP, ADX_OrderCloseProfit);
     Set(STRAT_PARAM_OCT, ADX_OrderCloseTime);
