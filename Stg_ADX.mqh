@@ -26,11 +26,11 @@ INPUT float ADX_OrderCloseLoss = 0;         // Order close loss
 INPUT float ADX_OrderCloseProfit = 0;       // Order close profit
 INPUT int ADX_OrderCloseTime = -30;         // Order close time in mins (>0) or bars (<0)
 INPUT_GROUP("ADX strategy: ADX indicator params");
-INPUT int ADX_Indi_ADX_Period = 14;                                         // Averaging period
-INPUT ENUM_APPLIED_PRICE ADX_Indi_ADX_Applied_Price = PRICE_TYPICAL;        // Applied price.
-INPUT int ADX_Indi_ADX_Shift = 0;                                           // Shift
-INPUT ENUM_IDATA_SOURCE_TYPE ADX_Indi_ADX_SourceType = IDATA_BUILTIN;       // Source type
-INPUT STG_ADX_INDI_ADX_MODE ADX_Indi_ADX_Mode = STG_ADX_INDI_ADX_MODE_ADX;  // Calculation mode
+INPUT int ADX_Indi_ADX_Period = 14;                                          // Averaging period
+INPUT ENUM_APPLIED_PRICE ADX_Indi_ADX_Applied_Price = PRICE_TYPICAL;         // Applied price.
+INPUT int ADX_Indi_ADX_Shift = 0;                                            // Shift
+INPUT ENUM_IDATA_SOURCE_TYPE ADX_Indi_ADX_SourceType = IDATA_BUILTIN;        // Source type
+INPUT STG_ADX_INDI_ADX_MODE ADX_Indi_ADX_Mode = STG_ADX_INDI_ADX_MODE_ADXW;  // Calculation mode
 
 // Structs.
 
