@@ -9,6 +9,7 @@
 // Includes EA31337 framework.
 #include <EA31337-classes/EA.mqh>
 #include <EA31337-classes/Indicators/Indi_ADX.mqh>
+#include <EA31337-classes/Indicators/Indi_ADXW.mqh>
 #include <EA31337-classes/Strategy.mqh>
 
 // Inputs.
