@@ -76,8 +76,8 @@ class Stg_ADX : public Strategy {
 
   static Stg_ADX *Init(ENUM_TIMEFRAMES _tf = NULL) {
     // Initialize strategy initial values.
-    ADXParams _adx_params(indi_adx_defaults, _tf);
-    ADXWParams _adxw_params(indi_adxw_defaults, _tf);
+    ADXParams _adx_params((ADXParams)indi_adx_defaults, _tf);
+    ADXWParams _adxw_params((ADXWParams)indi_adxw_defaults, _tf);
     StgParams _stg_params(stg_adx_defaults);
 #ifdef __config__
     SetParamsByTf<ADXParams>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30, indi_adx_h1,
