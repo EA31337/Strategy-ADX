@@ -9,16 +9,16 @@
 // User input params.
 INPUT_GROUP("ADX strategy: strategy params");
 INPUT float ADX_LotSize = 0;                // Lot size
-INPUT int ADX_SignalOpenMethod = 16;        // Signal open method (-127-127)
-INPUT float ADX_SignalOpenLevel = 3.0f;     // Signal open level
+INPUT int ADX_SignalOpenMethod = 32;        // Signal open method (-127-127)
+INPUT float ADX_SignalOpenLevel = 2.0f;     // Signal open level
 INPUT int ADX_SignalOpenFilterMethod = 32;  // Signal open filter method
-INPUT int ADX_SignalOpenFilterTime = 9;     // Signal open filter time
+INPUT int ADX_SignalOpenFilterTime = 12;    // Signal open filter time
 INPUT int ADX_SignalOpenBoostMethod = 0;    // Signal open boost method
 INPUT int ADX_SignalCloseMethod = 4;        // Signal close method (-127-127)
 INPUT int ADX_SignalCloseFilter = 0;        // Signal close filter (-127-127)
 INPUT float ADX_SignalCloseLevel = 0.0f;    // Signal close level (>0.0001)
-INPUT int ADX_PriceStopMethod = 3;          // Price stop method (0-127)
-INPUT float ADX_PriceStopLevel = 2;         // Price stop level
+INPUT int ADX_PriceStopMethod = 4;          // Price stop method (0-127)
+INPUT float ADX_PriceStopLevel = 0;         // Price stop level
 INPUT int ADX_TickFilterMethod = 28;        // Tick filter method
 INPUT float ADX_MaxSpread = 4.0;            // Max spread to trade (pips)
 INPUT short ADX_Shift = 0;                  // Shift (relative to the current bar, 0 - default)
@@ -26,8 +26,7 @@ INPUT float ADX_OrderCloseLoss = 0;         // Order close loss
 INPUT float ADX_OrderCloseProfit = 0;       // Order close profit
 INPUT int ADX_OrderCloseTime = -30;         // Order close time in mins (>0) or bars (<0)
 INPUT_GROUP("ADX strategy: ADX indicator params");
-INPUT int ADX_Indi_ADX_Period = 14;                                          // Averaging period
-INPUT ENUM_APPLIED_PRICE ADX_Indi_ADX_Applied_Price = PRICE_TYPICAL;         // Applied price.
+INPUT int ADX_Indi_ADX_Period = 16;                                          // Averaging period
 INPUT int ADX_Indi_ADX_Shift = 0;                                            // Shift
 INPUT ENUM_IDATA_SOURCE_TYPE ADX_Indi_ADX_SourceType = IDATA_BUILTIN;        // Source type
 INPUT STG_ADX_INDI_ADX_MODE ADX_Indi_ADX_Mode = STG_ADX_INDI_ADX_MODE_ADXW;  // Calculation mode
@@ -39,6 +38,11 @@ struct Indi_ADX_Params_Defaults : ADXParams {
   Indi_ADX_Params_Defaults()
       : ADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_Shift, PERIOD_CURRENT, ::ADX_Indi_ADX_SourceType) {}
 } indi_adx_defaults;
+
+struct Indi_ADXW_Params_Defaults : ADXWParams {
+  Indi_ADXW_Params_Defaults()
+      : ADXWParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_Shift, PERIOD_CURRENT, ::ADX_Indi_ADX_SourceType) {}
+} indi_adxw_defaults;
 
 // Defines struct with default user strategy values.
 struct Stg_ADX_Params_Defaults : StgParams {
@@ -73,7 +77,7 @@ class Stg_ADX : public Strategy {
   static Stg_ADX *Init(ENUM_TIMEFRAMES _tf = NULL) {
     // Initialize strategy initial values.
     ADXParams _adx_params(indi_adx_defaults, _tf);
-    ADXWParams _adxw_params(indi_adx_defaults, _tf);
+    ADXWParams _adxw_params(indi_adxw_defaults, _tf);
     StgParams _stg_params(stg_adx_defaults);
 #ifdef __config__
     SetParamsByTf<ADXParams>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30, indi_adx_h1,

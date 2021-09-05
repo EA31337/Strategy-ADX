@@ -11,3 +11,8 @@
 
 // Includes the main code.
 #include "Stg_ADX.mq5"
+
+#ifdef __resource__
+#property tester_indicator "::Indicators\\Examples\\ADX.ex5"
+#property tester_indicator "::Indicators\\Examples\\ADXW.ex5"
+#endif
