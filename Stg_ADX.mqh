@@ -77,7 +77,6 @@ class Stg_ADX : public Strategy {
                              stg_adx_h8);
 #endif
     // Initialize indicator.
-    ADXParams adx_params(_indi_params);
     _stg_params.SetIndicator(new Indi_ADX(_indi_params));
     // Initialize Strategy instance.
     ChartParams _cparams(_tf, _Symbol);
