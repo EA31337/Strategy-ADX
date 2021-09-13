@@ -48,19 +48,6 @@ struct Stg_ADX_Params_Defaults : StgParams {
   }
 } stg_adx_defaults;
 
-// Struct to define strategy parameters to override.
-struct Stg_ADX_Params : StgParams {
-  ADXParams iparams;
-  StgParams sparams;
-
-  // Struct constructors.
-  Stg_ADX_Params(ADXParams &_iparams, StgParams &_sparams)
-      : iparams(indi_adx_defaults, _iparams.tf.GetTf()), sparams(stg_adx_defaults) {
-    iparams = _iparams;
-    sparams = _sparams;
-  }
-};
-
 #ifdef __config__
 // Loads pair specific param values.
 #include "config/H1.h"
