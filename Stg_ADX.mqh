@@ -32,7 +32,7 @@ INPUT int ADX_Indi_ADX_Shift = 0;                                  // Shift
 // Defines struct with default user indicator values.
 struct Indi_ADX_Params_Defaults : ADXParams {
   Indi_ADX_Params_Defaults() : ADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_Applied_Price, ::ADX_Indi_ADX_Shift) {}
-} indi_adx_defaults;
+};
 
 // Defines struct with default user strategy values.
 struct Stg_ADX_Params_Defaults : StgParams {
@@ -46,7 +46,7 @@ struct Stg_ADX_Params_Defaults : StgParams {
     Set(STRAT_PARAM_OCT, ADX_OrderCloseTime);
     Set(STRAT_PARAM_SOFT, ADX_SignalOpenFilterTime);
   }
-} stg_adx_defaults;
+};
 
 #ifdef __config__
 // Loads pair specific param values.
@@ -66,7 +66,9 @@ class Stg_ADX : public Strategy {
 
   static Stg_ADX *Init(ENUM_TIMEFRAMES _tf = NULL) {
     // Initialize strategy initial values.
+    Indi_ADX_Params_Defaults indi_adx_defaults;
     ADXParams _indi_params(indi_adx_defaults, _tf);
+    Stg_ADX_Params_Defaults stg_adx_defaults;
     StgParams _stg_params(stg_adx_defaults);
 #ifdef __config__
     SetParamsByTf<ADXParams>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30, indi_adx_h1,
