@@ -9,7 +9,7 @@
 // User input params.
 INPUT_GROUP("ADX strategy: strategy params");
 INPUT float ADX_LotSize = 0;                // Lot size
-INPUT int ADX_SignalOpenMethod = 32;        // Signal open method (-127-127)
+INPUT int ADX_SignalOpenMethod = 0;         // Signal open method (-127-127)
 INPUT float ADX_SignalOpenLevel = 2.0f;     // Signal open level
 INPUT int ADX_SignalOpenFilterMethod = 32;  // Signal open filter method
 INPUT int ADX_SignalOpenFilterTime = 12;    // Signal open filter time
@@ -27,7 +27,7 @@ INPUT float ADX_OrderCloseProfit = 80;      // Order close profit
 INPUT int ADX_OrderCloseTime = -30;         // Order close time in mins (>0) or bars (<0)
 INPUT_GROUP("ADX strategy: ADX indicator params");
 INPUT int ADX_Indi_ADX_Period = 16;                                          // Averaging period
-INPUT ENUM_APPLIED_PRICE ADX_Indi_ADX_AppliedPrice = PRICE_TYPICAL;          // Shift
+INPUT ENUM_APPLIED_PRICE ADX_Indi_ADX_AppliedPrice = PRICE_TYPICAL;          // Applied price
 INPUT int ADX_Indi_ADX_Shift = 0;                                            // Shift
 INPUT ENUM_IDATA_SOURCE_TYPE ADX_Indi_ADX_SourceType = IDATA_BUILTIN;        // Source type
 INPUT STG_ADX_INDI_ADX_MODE ADX_Indi_ADX_Mode = STG_ADX_INDI_ADX_MODE_ADXW;  // Calculation mode
@@ -36,7 +36,9 @@ INPUT STG_ADX_INDI_ADX_MODE ADX_Indi_ADX_Mode = STG_ADX_INDI_ADX_MODE_ADXW;  // 
 
 // Defines struct with default user indicator values.
 struct Indi_ADX_Params_Defaults : ADXParams {
-  Indi_ADX_Params_Defaults() : ADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift) {}
+  Indi_ADX_Params_Defaults()
+      : ADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift, PERIOD_CURRENT,
+                  ::ADX_Indi_ADX_SourceType) {}
 };
 
 struct Indi_ADXW_Params_Defaults : ADXWParams {
@@ -81,7 +83,7 @@ class Stg_ADX : public Strategy {
     Indi_ADXW_Params_Defaults indi_adxw_defaults;
     ADXParams _adx_params((ADXParams)indi_adx_defaults, _tf);
     ADXWParams _adxw_params((ADXWParams)indi_adxw_defaults, _tf);
-    StgParams _stg_params;
+    Stg_ADX_Params_Defaults _stg_params;
 #ifdef __config__
     SetParamsByTf<ADXParams>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30, indi_adx_h1,
                              indi_adx_h4, indi_adx_h8);
