@@ -3,13 +3,16 @@
  * Implements ADX strategy based on the Average Directional Movement Index indicator.
  */
 
+// Includes.
+#include "include/enum.h"
+
 // User input params.
 INPUT_GROUP("ADX strategy: strategy params");
 INPUT float ADX_LotSize = 0;                // Lot size
-INPUT int ADX_SignalOpenMethod = 16;        // Signal open method (-127-127)
-INPUT float ADX_SignalOpenLevel = 3.0f;     // Signal open level
+INPUT int ADX_SignalOpenMethod = 32;        // Signal open method (-127-127)
+INPUT float ADX_SignalOpenLevel = 2.0f;     // Signal open level
 INPUT int ADX_SignalOpenFilterMethod = 32;  // Signal open filter method
-INPUT int ADX_SignalOpenFilterTime = 9;     // Signal open filter time
+INPUT int ADX_SignalOpenFilterTime = 12;    // Signal open filter time
 INPUT int ADX_SignalOpenBoostMethod = 0;    // Signal open boost method
 INPUT int ADX_SignalCloseMethod = 4;        // Signal close method (-127-127)
 INPUT int ADX_SignalCloseFilter = 0;        // Signal close filter (-127-127)
@@ -23,15 +26,23 @@ INPUT float ADX_OrderCloseLoss = 80;        // Order close loss
 INPUT float ADX_OrderCloseProfit = 80;      // Order close profit
 INPUT int ADX_OrderCloseTime = -30;         // Order close time in mins (>0) or bars (<0)
 INPUT_GROUP("ADX strategy: ADX indicator params");
-INPUT int ADX_Indi_ADX_Period = 14;                                // Averaging period
-INPUT ENUM_APPLIED_PRICE ADX_Indi_ADX_Applied_Price = PRICE_HIGH;  // Applied price.
-INPUT int ADX_Indi_ADX_Shift = 0;                                  // Shift
+INPUT int ADX_Indi_ADX_Period = 16;                                          // Averaging period
+INPUT ENUM_APPLIED_PRICE ADX_Indi_ADX_AppliedPrice = PRICE_TYPICAL;          // Shift
+INPUT int ADX_Indi_ADX_Shift = 0;                                            // Shift
+INPUT ENUM_IDATA_SOURCE_TYPE ADX_Indi_ADX_SourceType = IDATA_BUILTIN;        // Source type
+INPUT STG_ADX_INDI_ADX_MODE ADX_Indi_ADX_Mode = STG_ADX_INDI_ADX_MODE_ADXW;  // Calculation mode
 
 // Structs.
 
 // Defines struct with default user indicator values.
 struct Indi_ADX_Params_Defaults : ADXParams {
-  Indi_ADX_Params_Defaults() : ADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_Applied_Price, ::ADX_Indi_ADX_Shift) {}
+  Indi_ADX_Params_Defaults() : ADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift) {}
+};
+
+struct Indi_ADXW_Params_Defaults : ADXWParams {
+  Indi_ADXW_Params_Defaults()
+      : ADXWParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift, PERIOD_CURRENT,
+                   ::ADX_Indi_ADX_SourceType) {}
 };
 
 // Defines struct with default user strategy values.
@@ -67,9 +78,10 @@ class Stg_ADX : public Strategy {
   static Stg_ADX *Init(ENUM_TIMEFRAMES _tf = NULL) {
     // Initialize strategy initial values.
     Indi_ADX_Params_Defaults indi_adx_defaults;
-    ADXParams _indi_params(indi_adx_defaults, _tf);
-    Stg_ADX_Params_Defaults stg_adx_defaults;
-    StgParams _stg_params(stg_adx_defaults);
+    Indi_ADXW_Params_Defaults indi_adxw_defaults;
+    ADXParams _adx_params((ADXParams)indi_adx_defaults, _tf);
+    ADXWParams _adxw_params((ADXWParams)indi_adxw_defaults, _tf);
+    StgParams _stg_params;
 #ifdef __config__
     SetParamsByTf<ADXParams>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30, indi_adx_h1,
                              indi_adx_h4, indi_adx_h8);
@@ -77,7 +89,14 @@ class Stg_ADX : public Strategy {
                              stg_adx_h8);
 #endif
     // Initialize indicator.
-    _stg_params.SetIndicator(new Indi_ADX(_indi_params));
+    switch (ADX_Indi_ADX_Mode) {
+      case STG_ADX_INDI_ADX_MODE_ADX:
+        _stg_params.SetIndicator(new Indi_ADX(_adx_params));
+        break;
+      case STG_ADX_INDI_ADX_MODE_ADXW:
+        _stg_params.SetIndicator(new Indi_ADXW(_adxw_params));
+        break;
+    }
     // Initialize Strategy instance.
     ChartParams _cparams(_tf, _Symbol);
     TradeParams _tparams;
@@ -89,8 +108,9 @@ class Stg_ADX : public Strategy {
    * Check strategy's opening signal.
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, float _level = 0.0f, int _shift = 0) {
-    Indi_ADX *_indi = GetIndicator();
-    bool _result = _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift);
+    Indicator *_indi = GetIndicator();
+    bool _result =
+        _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift) && _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift + 3);
     if (!_result) {
       // Returns false when indicator data is not valid.
       return false;
@@ -99,13 +119,13 @@ class Stg_ADX : public Strategy {
     switch (_cmd) {
       // Buy: +DI line is above -DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
       case ORDER_TYPE_BUY:
-        _result &= _indi[CURR][(int)LINE_MINUSDI] < _indi[CURR][(int)LINE_PLUSDI];
+        _result &= _indi[_shift][(int)LINE_MINUSDI] < _indi[_shift][(int)LINE_PLUSDI];
         _result &= _indi.IsIncByPct(_level, 0, 0, 3);
         _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
         break;
       // Sell: -DI line is above +DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
       case ORDER_TYPE_SELL:
-        _result &= _indi[CURR][(int)LINE_MINUSDI] > _indi[CURR][(int)LINE_PLUSDI];
+        _result &= _indi[_shift][(int)LINE_MINUSDI] > _indi[_shift][(int)LINE_PLUSDI];
         _result &= _indi.IsDecByPct(-_level, 0, 0, 3);
         _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
         break;

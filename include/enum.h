@@ -4,15 +4,7 @@
 //|                                       https://github.com/EA31337 |
 //+------------------------------------------------------------------+
 
-/**
- * @file
- * Implements ADX strategy.
- */
-
-// Includes the main code.
-#include "Stg_ADX.mq5"
-
-#ifdef __resource__
-#property tester_indicator "::Indicators\\Examples\\ADX.ex5"
-#property tester_indicator "::Indicators\\Examples\\ADXW.ex5"
-#endif
+enum STG_ADX_INDI_ADX_MODE {
+  STG_ADX_INDI_ADX_MODE_ADX = 0,  // ADX
+  STG_ADX_INDI_ADX_MODE_ADXW,     // ADX Wilder
+};
