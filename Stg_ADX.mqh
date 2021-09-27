@@ -12,7 +12,7 @@ INPUT float ADX_LotSize = 0;                // Lot size
 INPUT int ADX_SignalOpenMethod = 0;         // Signal open method (-127-127)
 INPUT float ADX_SignalOpenLevel = 2.0f;     // Signal open level
 INPUT int ADX_SignalOpenFilterMethod = 32;  // Signal open filter method
-INPUT int ADX_SignalOpenFilterTime = 3;    // Signal open filter time
+INPUT int ADX_SignalOpenFilterTime = 3;     // Signal open filter time
 INPUT int ADX_SignalOpenBoostMethod = 0;    // Signal open boost method
 INPUT int ADX_SignalCloseMethod = 4;        // Signal close method (-127-127)
 INPUT int ADX_SignalCloseFilter = 0;        // Signal close filter (-127-127)
@@ -90,19 +90,19 @@ class Stg_ADX : public Strategy {
     SetParamsByTf<StgParams>(_stg_params, _tf, stg_adx_m1, stg_adx_m5, stg_adx_m15, stg_adx_m30, stg_adx_h1, stg_adx_h4,
                              stg_adx_h8);
 #endif
-    // Initialize indicator.
-    switch (ADX_Indi_ADX_Mode) {
-      case STG_ADX_INDI_ADX_MODE_ADX:
-        _stg_params.SetIndicator(new Indi_ADX(_adx_params));
-        break;
-      case STG_ADX_INDI_ADX_MODE_ADXW:
-        _stg_params.SetIndicator(new Indi_ADXW(_adxw_params));
-        break;
-    }
     // Initialize Strategy instance.
     ChartParams _cparams(_tf, _Symbol);
     TradeParams _tparams;
     Strategy *_strat = new Stg_ADX(_stg_params, _tparams, _cparams, "ADX");
+    // Initialize indicator.
+    switch (ADX_Indi_ADX_Mode) {
+      case STG_ADX_INDI_ADX_MODE_ADX:
+        _strat.SetIndicator(new Indi_ADX(_adx_params));
+        break;
+      case STG_ADX_INDI_ADX_MODE_ADXW:
+        _strat.SetIndicator(new Indi_ADXW(_adxw_params));
+        break;
+    }
     return _strat;
   }
 
