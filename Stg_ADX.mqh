@@ -36,15 +36,15 @@ INPUT STG_ADX_INDI_ADX_MODE ADX_Indi_ADX_Mode = STG_ADX_INDI_ADX_MODE_ADXW;  // 
 
 // Defines struct with default user indicator values.
 struct Indi_ADX_Params_Defaults : ADXParams {
-  Indi_ADX_Params_Defaults()
-      : ADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift, PERIOD_CURRENT,
-                  ::ADX_Indi_ADX_SourceType) {}
+  Indi_ADX_Params_Defaults() : ADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift) {
+    SetDataSourceType(::ADX_Indi_ADX_SourceType);
+  }
 };
 
 struct Indi_ADXW_Params_Defaults : ADXWParams {
-  Indi_ADXW_Params_Defaults()
-      : ADXWParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift, PERIOD_CURRENT,
-                   ::ADX_Indi_ADX_SourceType) {}
+  Indi_ADXW_Params_Defaults() : ADXWParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift) {
+    SetDataSourceType(::ADX_Indi_ADX_SourceType);
+  }
 };
 
 // Defines struct with default user strategy values.
@@ -110,7 +110,7 @@ class Stg_ADX : public Strategy {
    * Check strategy's opening signal.
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, float _level = 0.0f, int _shift = 0) {
-    Indicator *_indi = GetIndicator();
+    Indi_ADX *_indi = GetIndicator();
     bool _result =
         _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift) && _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift + 3);
     if (!_result) {
