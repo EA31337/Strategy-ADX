@@ -110,9 +110,20 @@ class Stg_ADX : public Strategy {
    * Check strategy's opening signal.
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, float _level = 0.0f, int _shift = 0) {
-    Indi_ADX *_indi = GetIndicator();
-    bool _result =
-        _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift) && _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift + 3);
+    IndicatorBase *_indi = GetIndicator();
+    bool _result = true;
+    switch (ADX_Indi_ADX_Mode) {
+      case STG_ADX_INDI_ADX_MODE_ADX:
+        _result &= dynamic_cast<Indi_ADX*>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift)
+          && dynamic_cast<Indi_ADX*>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift + 3);
+        break;
+      case STG_ADX_INDI_ADX_MODE_ADXW:
+        _result &= dynamic_cast<Indi_ADXW*>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift)
+          && dynamic_cast<Indi_ADXW*>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift + 3);
+        break;
+      default:
+        break;
+    }
     if (!_result) {
       // Returns false when indicator data is not valid.
       return false;
