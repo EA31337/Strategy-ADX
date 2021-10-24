@@ -4,8 +4,8 @@
  */
 
 // Defines indicator's parameter values for the given pair symbol and timeframe.
-struct Indi_ADX_Params_M15 : ADXParams {
-  Indi_ADX_Params_M15() : ADXParams(indi_adx_defaults, PERIOD_M15) {}
+struct Indi_ADX_Params_M15 : IndiADXParams {
+  Indi_ADX_Params_M15() : IndiADXParams(indi_adx_defaults, PERIOD_M15) {}
 } indi_adx_m15;
 
 // Defines strategy's parameter values for the given pair symbol and timeframe.

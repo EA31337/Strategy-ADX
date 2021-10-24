@@ -35,14 +35,15 @@ INPUT STG_ADX_INDI_ADX_MODE ADX_Indi_ADX_Mode = STG_ADX_INDI_ADX_MODE_ADXW;  // 
 // Structs.
 
 // Defines struct with default user indicator values.
-struct Indi_ADX_Params_Defaults : ADXParams {
-  Indi_ADX_Params_Defaults() : ADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift) {
+struct Indi_ADX_Params_Defaults : IndiADXParams {
+  Indi_ADX_Params_Defaults() : IndiADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift) {
     SetDataSourceType(::ADX_Indi_ADX_SourceType);
   }
 };
 
-struct Indi_ADXW_Params_Defaults : ADXWParams {
-  Indi_ADXW_Params_Defaults() : ADXWParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift) {
+struct Indi_ADXW_Params_Defaults : IndiADXWParams {
+  Indi_ADXW_Params_Defaults()
+      : IndiADXWParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift) {
     SetDataSourceType(::ADX_Indi_ADX_SourceType);
   }
 };
@@ -81,12 +82,12 @@ class Stg_ADX : public Strategy {
     // Initialize strategy initial values.
     Indi_ADX_Params_Defaults indi_adx_defaults;
     Indi_ADXW_Params_Defaults indi_adxw_defaults;
-    ADXParams _adx_params((ADXParams)indi_adx_defaults, _tf);
-    ADXWParams _adxw_params((ADXWParams)indi_adxw_defaults, _tf);
+    IndiADXParams _adx_params((IndiADXParams)indi_adx_defaults, _tf);
+    IndiADXWParams _adxw_params((IndiADXWParams)indi_adxw_defaults, _tf);
     Stg_ADX_Params_Defaults _stg_params;
 #ifdef __config__
-    SetParamsByTf<ADXParams>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30, indi_adx_h1,
-                             indi_adx_h4, indi_adx_h8);
+    SetParamsByTf<IndiADXParams>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30, indi_adx_h1,
+                                 indi_adx_h4, indi_adx_h8);
     SetParamsByTf<StgParams>(_stg_params, _tf, stg_adx_m1, stg_adx_m5, stg_adx_m15, stg_adx_m30, stg_adx_h1, stg_adx_h4,
                              stg_adx_h8);
 #endif
@@ -114,12 +115,12 @@ class Stg_ADX : public Strategy {
     bool _result = true;
     switch (ADX_Indi_ADX_Mode) {
       case STG_ADX_INDI_ADX_MODE_ADX:
-        _result &= dynamic_cast<Indi_ADX*>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift)
-          && dynamic_cast<Indi_ADX*>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift + 3);
+        _result &= dynamic_cast<Indi_ADX *>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift) &&
+                   dynamic_cast<Indi_ADX *>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift + 3);
         break;
       case STG_ADX_INDI_ADX_MODE_ADXW:
-        _result &= dynamic_cast<Indi_ADXW*>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift)
-          && dynamic_cast<Indi_ADXW*>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift + 3);
+        _result &= dynamic_cast<Indi_ADXW *>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift) &&
+                   dynamic_cast<Indi_ADXW *>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift + 3);
         break;
       default:
         break;
