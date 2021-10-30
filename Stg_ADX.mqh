@@ -80,14 +80,8 @@ class Stg_ADX : public Strategy {
 
   static Stg_ADX *Init(ENUM_TIMEFRAMES _tf = NULL) {
     // Initialize strategy initial values.
-    Indi_ADX_Params_Defaults indi_adx_defaults;
-    Indi_ADXW_Params_Defaults indi_adxw_defaults;
-    IndiADXParams _adx_params((IndiADXParams)indi_adx_defaults, _tf);
-    IndiADXWParams _adxw_params((IndiADXWParams)indi_adxw_defaults, _tf);
     Stg_ADX_Params_Defaults _stg_params;
 #ifdef __config__
-    SetParamsByTf<IndiADXParams>(_indi_params, _tf, indi_adx_m1, indi_adx_m5, indi_adx_m15, indi_adx_m30, indi_adx_h1,
-                                 indi_adx_h4, indi_adx_h8);
     SetParamsByTf<StgParams>(_stg_params, _tf, stg_adx_m1, stg_adx_m5, stg_adx_m15, stg_adx_m30, stg_adx_h1, stg_adx_h4,
                              stg_adx_h8);
 #endif
@@ -96,15 +90,25 @@ class Stg_ADX : public Strategy {
     TradeParams _tparams;
     Strategy *_strat = new Stg_ADX(_stg_params, _tparams, _cparams, "ADX");
     // Initialize indicator.
+    return _strat;
+  }
+
+  /**
+   * Event on strategy's init.
+   */
+  void OnInit() {
+    Indi_ADX_Params_Defaults indi_adx_defaults;
+    Indi_ADXW_Params_Defaults indi_adxw_defaults;
+    IndiADXParams _adx_params((IndiADXParams)indi_adx_defaults, Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
+    IndiADXWParams _adxw_params((IndiADXWParams)indi_adxw_defaults, Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
     switch (ADX_Indi_ADX_Mode) {
       case STG_ADX_INDI_ADX_MODE_ADX:
-        _strat.SetIndicator(new Indi_ADX(_adx_params));
+        SetIndicator(new Indi_ADX(_adx_params));
         break;
       case STG_ADX_INDI_ADX_MODE_ADXW:
-        _strat.SetIndicator(new Indi_ADXW(_adxw_params));
+        SetIndicator(new Indi_ADXW(_adxw_params));
         break;
     }
-    return _strat;
   }
 
   /**
