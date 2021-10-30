@@ -34,20 +34,6 @@ INPUT STG_ADX_INDI_ADX_MODE ADX_Indi_ADX_Mode = STG_ADX_INDI_ADX_MODE_ADXW;  // 
 
 // Structs.
 
-// Defines struct with default user indicator values.
-struct Indi_ADX_Params_Defaults : IndiADXParams {
-  Indi_ADX_Params_Defaults() : IndiADXParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift) {
-    SetDataSourceType(::ADX_Indi_ADX_SourceType);
-  }
-};
-
-struct Indi_ADXW_Params_Defaults : IndiADXWParams {
-  Indi_ADXW_Params_Defaults()
-      : IndiADXWParams(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift) {
-    SetDataSourceType(::ADX_Indi_ADX_SourceType);
-  }
-};
-
 // Defines struct with default user strategy values.
 struct Stg_ADX_Params_Defaults : StgParams {
   Stg_ADX_Params_Defaults()
@@ -97,10 +83,12 @@ class Stg_ADX : public Strategy {
    * Event on strategy's init.
    */
   void OnInit() {
-    Indi_ADX_Params_Defaults indi_adx_defaults;
-    Indi_ADXW_Params_Defaults indi_adxw_defaults;
-    IndiADXParams _adx_params((IndiADXParams)indi_adx_defaults, Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
-    IndiADXWParams _adxw_params((IndiADXWParams)indi_adxw_defaults, Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
+    IndiADXParams _adx_params(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift);
+    _adx_params.SetDataSourceType(::ADX_Indi_ADX_SourceType);
+    _adx_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
+    IndiADXWParams _adxw_params(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift);
+    _adxw_params.SetDataSourceType(::ADX_Indi_ADX_SourceType);
+    _adxw_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
     switch (ADX_Indi_ADX_Mode) {
       case STG_ADX_INDI_ADX_MODE_ADX:
         SetIndicator(new Indi_ADX(_adx_params));
