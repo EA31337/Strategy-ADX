@@ -84,17 +84,15 @@ class Stg_ADX : public Strategy {
    */
   void OnInit() {
     IndiADXParams _adx_params(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift);
-    _adx_params.SetDataSourceType(::ADX_Indi_ADX_SourceType);
     _adx_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
     IndiADXWParams _adxw_params(::ADX_Indi_ADX_Period, ::ADX_Indi_ADX_AppliedPrice, ::ADX_Indi_ADX_Shift);
-    _adxw_params.SetDataSourceType(::ADX_Indi_ADX_SourceType);
     _adxw_params.SetTf(Get<ENUM_TIMEFRAMES>(STRAT_PARAM_TF));
     switch (ADX_Indi_ADX_Mode) {
       case STG_ADX_INDI_ADX_MODE_ADX:
-        SetIndicator(new Indi_ADX(_adx_params));
+        SetIndicator(new Indi_ADX(_adx_params, ::ADX_Indi_ADX_SourceType));
         break;
       case STG_ADX_INDI_ADX_MODE_ADXW:
-        SetIndicator(new Indi_ADXW(_adxw_params));
+        SetIndicator(new Indi_ADXW(_adxw_params, ::ADX_Indi_ADX_SourceType));
         break;
     }
   }
@@ -103,37 +101,29 @@ class Stg_ADX : public Strategy {
    * Check strategy's opening signal.
    */
   bool SignalOpen(ENUM_ORDER_TYPE _cmd, int _method = 0, float _level = 0.0f, int _shift = 0) {
-    IndicatorBase *_indi = GetIndicator();
+    IndicatorData *_indi = GetIndicator();
     bool _result = true;
-    switch (ADX_Indi_ADX_Mode) {
-      case STG_ADX_INDI_ADX_MODE_ADX:
-        _result &= dynamic_cast<Indi_ADX *>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift) &&
-                   dynamic_cast<Indi_ADX *>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift + 3);
-        break;
-      case STG_ADX_INDI_ADX_MODE_ADXW:
-        _result &= dynamic_cast<Indi_ADXW *>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift) &&
-                   dynamic_cast<Indi_ADXW *>(_indi).GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift + 3);
-        break;
-      default:
-        break;
-    }
+    _result &= _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift) && _indi.GetFlag(INDI_ENTRY_FLAG_IS_VALID, _shift + 3);
     if (!_result) {
       // Returns false when indicator data is not valid.
       return false;
     }
     IndicatorSignal _signals = _indi.GetSignals(4, _shift, LINE_MINUSDI, LINE_PLUSDI);
+    // IndicatorSignal _signals = dynamic_cast<Indi_ADX *>(_indi).GetSignals(4, _shift, LINE_MINUSDI, LINE_PLUSDI);
     switch (_cmd) {
       // Buy: +DI line is above -DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
       case ORDER_TYPE_BUY:
         _result &= _indi[_shift][(int)LINE_MINUSDI] < _indi[_shift][(int)LINE_PLUSDI];
         _result &= _indi.IsIncByPct(_level, 0, 0, 3);
-        _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
+        // _result &= dynamic_cast<Indi_ADX *>(_indi).IsIncByPct(_level, 0, 0, 3);
+        // _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
         break;
       // Sell: -DI line is above +DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
       case ORDER_TYPE_SELL:
         _result &= _indi[_shift][(int)LINE_MINUSDI] > _indi[_shift][(int)LINE_PLUSDI];
         _result &= _indi.IsDecByPct(-_level, 0, 0, 3);
-        _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
+        //_result &= dynamic_cast<Indi_ADX *>(_indi).IsDecByPct(-_level, 0, 0, 3);
+        // _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
         break;
     }
     return _result;
