@@ -126,14 +126,16 @@ class Stg_ADX : public Strategy {
       // Buy: +DI line is above -DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
       case ORDER_TYPE_BUY:
         _result &= _indi[_shift][(int)LINE_MINUSDI] < _indi[_shift][(int)LINE_PLUSDI];
-        _result &= _indi.IsIncByPct(_level, 0, 0, 3);
-        _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
+        _result &= _indi.IsIncByPct(_level, 0, _shift, 3);
+        // _result &= dynamic_cast<Indi_ADX *>(_indi).IsIncByPct(_level, 0, _shift, 3);
+        // _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
         break;
       // Sell: -DI line is above +DI line, ADX is more than a certain value and grows (i.e. trend strengthens).
       case ORDER_TYPE_SELL:
         _result &= _indi[_shift][(int)LINE_MINUSDI] > _indi[_shift][(int)LINE_PLUSDI];
-        _result &= _indi.IsDecByPct(-_level, 0, 0, 3);
-        _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
+        _result &= _indi.IsDecByPct(-_level, 0, _shift, 3);
+        //_result &= dynamic_cast<Indi_ADX *>(_indi).IsDecByPct(-_level, 0, _shift, 3);
+        // _result &= _method > 0 ? _signals.CheckSignals(_method) : _signals.CheckSignalsAll(-_method);
         break;
     }
     return _result;
