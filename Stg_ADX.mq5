@@ -24,7 +24,7 @@ input bool Info_On_Chart = true;          // Display info on chart.
 
 // Defines.
 #define ea_name "Strategy ADX"
-#define ea_version "1.012"
+#define ea_version "1.013"
 #define ea_desc "Strategy based on EA31337 framework."
 #define ea_link "https://github.com/EA31337/Strategy-ADX"
 #define ea_author "EA31337 Ltd"
